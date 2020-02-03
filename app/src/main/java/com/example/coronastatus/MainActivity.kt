@@ -9,4 +9,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
+    //TODO
+    //카카오맵 api 다운로드 후 적용해볼것
+    //run.js 응용해서 환자 수 크롤링 후 DB에 추가 -> 안드로이드에서 불러오기
+
+
 }
