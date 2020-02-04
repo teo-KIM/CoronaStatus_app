@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +16,7 @@
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="d0401786c4f5d87ea8dbacb9c62c3fe5"/>
+            android:value="ecc0f0fa8933a9285b69375be86272ea"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ScreeningClinicMap"/>
+        <activity android:name=".getHash"/>
     </application>
 
 </manifest>

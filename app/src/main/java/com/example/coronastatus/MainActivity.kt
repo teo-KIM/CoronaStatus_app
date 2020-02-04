@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ScreeningClinicMap::class.java);
             startActivity(intent)
         }
+
     }
 
 }
