@@ -43,7 +43,7 @@ dependencies {
     //php로의 http요청을 보내기 위한 라이브러리. okhttp3
     implementation 'com.squareup.okhttp3:okhttp:3.9.0'
 
-    //json을 편하게 사용하기 위한 라이브러리. gson
-    implementation 'com.google.code.gson:gson:2.8.2'
+    //lottie 적용
+    implementation 'com.airbnb.android:lottie:3.2.0'
 
 }
