@@ -7,15 +7,15 @@
 
     <net.daum.mf.map.api.MapView
         android:id="@+id/map_view"
-        android:layout_width="356dp"
-        android:layout_height="573dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="570dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout6"
+        android:id="@+id/bottom_text"
         android:layout_width="match_parent"
         android:layout_height="14dp"
         android:orientation="horizontal"
