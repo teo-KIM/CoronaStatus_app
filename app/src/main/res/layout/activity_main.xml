@@ -139,7 +139,7 @@
             android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:gravity="center"
-            android:text="행동수칙" />
+            android:text="자가진단" />
 
 
     </LinearLayout>
@@ -154,7 +154,7 @@
 
 
         <ImageButton
-            android:id="@+id/home_btn"
+            android:id="@+id/board_btn"
             android:layout_width="89dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -164,7 +164,7 @@
             android:src="@drawable/board" />
 
         <ImageButton
-            android:id="@+id/customer_btn"
+            android:id="@+id/map_btn"
             android:layout_width="89dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -174,7 +174,7 @@
             android:src="@drawable/ic_map_black_24dp" />
 
         <ImageButton
-            android:id="@+id/schedule_btn"
+            android:id="@+id/diagnose_btn"
             android:layout_width="89dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
