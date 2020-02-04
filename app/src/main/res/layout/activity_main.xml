@@ -184,8 +184,6 @@
             android:src="@drawable/doctor" />
 
 
-
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
