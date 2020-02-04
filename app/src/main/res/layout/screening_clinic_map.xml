@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <RelativeLayout
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="570dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
-        android:id="@+id/linearLayout6"
+        android:id="@+id/bottom_text"
         android:layout_width="match_parent"
         android:layout_height="14dp"
         android:orientation="horizontal"
@@ -55,7 +65,7 @@
 
 
         <ImageButton
-            android:id="@+id/home_btn"
+            android:id="@+id/board_btn"
             android:layout_width="89dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -65,7 +75,7 @@
             android:src="@drawable/board" />
 
         <ImageButton
-            android:id="@+id/customer_btn"
+            android:id="@+id/map_btn"
             android:layout_width="89dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -75,7 +85,7 @@
             android:src="@drawable/ic_map_black_24dp" />
 
         <ImageButton
-            android:id="@+id/schedule_btn"
+            android:id="@+id/diagnose_btn"
             android:layout_width="89dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
