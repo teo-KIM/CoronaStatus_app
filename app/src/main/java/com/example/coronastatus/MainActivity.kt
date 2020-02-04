@@ -3,6 +3,7 @@ package com.example.coronastatus
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
@@ -37,47 +38,44 @@ class MainActivity : AppCompatActivity() {
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 
+        //db에서 가져올 데이터를 담을 배열
+        var until_yesterday_array = Array(6, { 0 })
+        var today_array = Array(6, { 0 })
+
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response?) {
                 //응답이 있을 경우 call은 무조건 null이 아니므로 ?를 쓰지 않는다.
-                //json 형식으로 받아온 데이터를 until_yesterday와 today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
+                //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
                 //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
-                var until_yesterday_array = Array(6, { 0 })
-                var today_array = Array(6, { 0 })
-
                 val body = response?.body()?.string()
-//                Log.d(TAG, "Success to execute request! : $body")
+                Log.d(TAG, "Success to execute request! : $body")
 
                 val jObject = JSONObject(body)
                 val jArray = jObject.getJSONArray("board")
 
                 for (i in 0 until jArray.length()) {
                     val obj = jArray.getJSONObject(i)
-                    val until_yesterday = obj.getInt("until_yesterday")
-                    val today = obj.getInt("today")
-//                    when (i) {
-//                        0 -> definite.setText(today)
-//                    }
 
-                    val until_yesterday_int = obj.getInt("until_yesterday")
+                    val until_yesterday = obj.getInt("until_yesterday")
                     //until_yesterday = db에 저장된 여태까지의 누계 인원수
 
-                    val today_int = obj.getInt("today")
+                    val today = obj.getInt("today")
                     //today = db에 저장된 오늘 최종 인원수
 
-                    until_yesterday_array.set(i, until_yesterday_int)
-                    today_array.set(i, today_int)
+                    until_yesterday_array[i]=until_yesterday
+                    today_array[i]=today
+
+                    Log.d(TAG, "today_array[$i] : "+ today_array[i])
+
+
+
 //                    Log.d(TAG, "classification($i) : $classification")
                 }
-                for (i in 0 until until_yesterday_array.size) {
-                    println("어제까지 : " + until_yesterday_array[i])
-                    println("오늘 최종 : " + today_array[i])
-                }
+
 
 
                 //data class 생성 후 전체 json 데이터를 한번에 파싱 하려고 했으나 데이터를 가져올 때 바로 파싱하는 것으로 로직 변경
-
                 //Gson으로 파싱
 //                val gson = GsonBuilder().create()
 //                val list = gson.fromJson(body, JsonObj::class.java)
@@ -93,9 +91,26 @@ class MainActivity : AppCompatActivity() {
                 println("Failed to execute request!")
             }
         })
+
+            Handler().postDelayed({
+                for (i in 0 until today_array.size) {
+                    when (i) {
+                        0 -> definite.setText(today_array[i].toString())
+                        1 -> death.setText(today_array[i].toString())
+                        2 -> recovery.setText(today_array[i].toString())
+                        3 -> isolated.setText(today_array[i].toString())
+                        4 -> released.setText(today_array[i].toString())
+                        5 -> symptom.setText(today_array[i].toString())
+                    }
+                }
+            }, 200)
+
+
+
     }
 
 }
+
 
 
 //data class 생성 후 전체 json 데이터를 한번에 파싱 하려고 했으나 데이터를 가져올 때 바로 파싱하는 것으로 로직 변경
