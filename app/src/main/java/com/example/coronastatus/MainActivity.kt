@@ -13,6 +13,7 @@ class MainActivity : AppCompatActivity() {
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java);
+            startActivity(intent)
         }
     }
 
