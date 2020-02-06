@@ -127,7 +127,7 @@ class ScreeningClinicMap : AppCompatActivity() {
                 marker.tag = 0
                 marker.mapPoint =
                     MapPoint.mapPointWithGeoCoord(longitude.toDouble(), latitude.toDouble())
-                marker.markerType = MapPOIItem.MarkerType.BluePin
+                marker.markerType = MapPOIItem.MarkerType.RedPin
                 marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
                 mapView.addPOIItem(marker)
 
