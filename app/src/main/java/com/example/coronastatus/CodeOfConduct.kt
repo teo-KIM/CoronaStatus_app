@@ -1,11 +1,11 @@
 package com.example.coronastatus
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-
 import kotlinx.android.synthetic.main.code_of_conduct.*
 import okhttp3.*
 import org.json.JSONObject
@@ -18,7 +18,6 @@ class CodeOfConduct : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.code_of_conduct)
 
-
         val myWebView = web_view as WebView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true)
@@ -29,6 +28,17 @@ class CodeOfConduct : AppCompatActivity() {
 
 
         getUrl(myWebView)
+
+        board_btn.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java);
+            startActivity(intent)
+        }
+
+
+        map_btn.setOnClickListener {
+            val intent = Intent(this, ScreeningClinicMap::class.java);
+            startActivity(intent)
+        }
 
     }
 

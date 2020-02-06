@@ -43,6 +43,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        diagnose_btn.setOnClickListener {
+            val intent = Intent(this, CodeOfConduct::class.java);
+            startActivity(intent)
+        }
+
         refresh_lottie.setOnClickListener {
             fetchJson()
             refresh_lottie.playAnimation()

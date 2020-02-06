@@ -6,8 +6,10 @@ import android.os.Handler
 import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.board_btn
 import kotlinx.android.synthetic.main.screening_clinic_map.*
+import kotlinx.android.synthetic.main.screening_clinic_map.diagnose_btn
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -50,6 +52,11 @@ class ScreeningClinicMap : AppCompatActivity() {
 
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
+            startActivity(intent)
+        }
+
+        diagnose_btn.setOnClickListener {
+            val intent = Intent(this, CodeOfConduct::class.java);
             startActivity(intent)
         }
     }
