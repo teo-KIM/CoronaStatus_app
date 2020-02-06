@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.coronastatus">
 
+    //인터넷 연결 동의
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    //인터넷 연결 상태 확인 동의
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    //내 위치 확인 동의
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 
