@@ -6,7 +6,6 @@ import android.os.Handler
 import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.board_btn
 import kotlinx.android.synthetic.main.screening_clinic_map.*
 import net.daum.mf.map.api.MapPOIItem
@@ -25,9 +24,13 @@ class ScreeningClinicMap : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
 
+        val mapView = MapView(this)
 
+        val mapViewContainer = map_view as ViewGroup
 
-        placeMarker()
+        mapViewContainer.addView(mapView)
+
+        placeMarker(mapView)
 
 //        val marker = MapPOIItem()
 //        marker.itemName = "진료소"
@@ -51,7 +54,7 @@ class ScreeningClinicMap : AppCompatActivity() {
         }
     }
 
-    fun placeMarker() {
+    fun placeMarker(mapView : MapView) {
 
         val url = URL("https://www.portfoliobyteo.kro.kr/getInfectedLocation.php")
         val request = Request.Builder().url(url).build()
@@ -92,7 +95,6 @@ class ScreeningClinicMap : AppCompatActivity() {
 //                    Log.d(TAG, "classification($i) : $classification")
                 }
 
-
             }
 
             override fun onFailure(call: Call?, e: IOException?) {
@@ -100,12 +102,6 @@ class ScreeningClinicMap : AppCompatActivity() {
                 println("Failed to execute request!")
             }
         })
-
-        val mapView = MapView(this)
-
-        val mapViewContainer = map_view as ViewGroup
-
-        mapViewContainer.addView(mapView)
 
         val marker = MapPOIItem()
 
@@ -131,7 +127,7 @@ class ScreeningClinicMap : AppCompatActivity() {
                 Log.d(TAG, "마커 표시 완료")
 
             }
-        }, 2000)
+        }, 4000)
 
 
     }
