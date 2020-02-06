@@ -1,4 +1,4 @@
-package com.example.coronastatus
+package com.teo.coronastatus
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager

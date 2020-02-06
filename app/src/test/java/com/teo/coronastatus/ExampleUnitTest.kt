@@ -1,4 +1,4 @@
-package com.example.coronastatus
+package com.teo.coronastatus
 
 import org.junit.Test
 

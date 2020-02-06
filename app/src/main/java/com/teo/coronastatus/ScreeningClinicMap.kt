@@ -1,12 +1,10 @@
-package com.example.coronastatus
+package com.teo.coronastatus
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.board_btn
 import kotlinx.android.synthetic.main.screening_clinic_map.*
 import kotlinx.android.synthetic.main.screening_clinic_map.diagnose_btn
