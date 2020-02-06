@@ -12,6 +12,8 @@ import org.json.JSONObject
 import java.io.IOException
 import java.lang.NullPointerException
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 
 private val TAG: String = MainActivity::class.java.simpleName
 
@@ -28,6 +30,11 @@ class MainActivity : AppCompatActivity() {
         }catch (e:NullPointerException){
             e.printStackTrace()
         }
+        val now = System.currentTimeMillis()
+        val date = Date(now)
+        val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val formatDate = dateNow.format(date)
+        now_tv.setText(formatDate)
 
         fetchJson()
 
@@ -39,6 +46,11 @@ class MainActivity : AppCompatActivity() {
         refresh_lottie.setOnClickListener {
             fetchJson()
             refresh_lottie.playAnimation()
+            val now = System.currentTimeMillis()
+            val date = Date(now)
+            val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+            val formatDate = dateNow.format(date)
+            now_tv.setText(formatDate)
         }
 
     }
@@ -109,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                         5 -> symptom.setText(today_array[i].toString())
                     }
                 }
-            }, 200)
+            }, 400)
 
 
 
