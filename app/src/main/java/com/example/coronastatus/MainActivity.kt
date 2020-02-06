@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+import java.lang.NullPointerException
 import java.net.URL
 
 private val TAG: String = MainActivity::class.java.simpleName
@@ -19,8 +21,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        try{
+            val token = FirebaseInstanceId.getInstance().getToken()
+//            Log.d(TAG, "device token : " + token)
 
-
+        }catch (e:NullPointerException){
+            e.printStackTrace()
+        }
 
         fetchJson()
 
@@ -53,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
                 val body = response?.body()?.string()
-                Log.d(TAG, "Success to execute request! : $body")
+//                Log.d(TAG, "Success to execute request! : $body")
 
                 val jObject = JSONObject(body)
                 val jArray = jObject.getJSONArray("board")
@@ -70,14 +77,9 @@ class MainActivity : AppCompatActivity() {
                     until_yesterday_array[i]=until_yesterday
                     today_array[i]=today
 
-                    Log.d(TAG, "today_array[$i] : "+ today_array[i])
-
-
-
+//                    Log.d(TAG, "today_array[$i] : "+ today_array[i])
 //                    Log.d(TAG, "classification($i) : $classification")
                 }
-
-
 
                 //data class 생성 후 전체 json 데이터를 한번에 파싱 하려고 했으나 데이터를 가져올 때 바로 파싱하는 것으로 로직 변경
                 //Gson으로 파싱
