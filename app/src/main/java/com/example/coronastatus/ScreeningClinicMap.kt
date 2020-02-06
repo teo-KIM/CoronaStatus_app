@@ -34,22 +34,6 @@ class ScreeningClinicMap : AppCompatActivity() {
 
         placeMarker(mapView)
 
-//        val marker = MapPOIItem()
-//        marker.itemName = "진료소"
-//        marker.tag = 0
-//        marker.mapPoint =
-//            MapPoint.mapPointWithGeoCoord(37.53737528.toDouble(), 127.00557633.toDouble())
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-//        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-//        mapView.addPOIItem(marker)
-//
-//        marker.itemName = "진료소"
-//        marker.tag = 0
-//        marker.mapPoint = MapPoint.mapPointWithGeoCoord(37.500545.toDouble(), 126.985867.toDouble())
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-//        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-//        mapView.addPOIItem(marker)
-
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
             startActivity(intent)
