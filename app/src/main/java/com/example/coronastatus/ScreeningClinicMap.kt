@@ -104,8 +104,8 @@ class ScreeningClinicMap : AppCompatActivity() {
                 var longitude = latlong[0]
                 var latitude = latlong[1].trim()
 
-                Log.d(TAG, nameList.get(i))
-                Log.d(TAG, longitude+", "+latitude)
+//                Log.d(TAG, nameList.get(i))
+//                Log.d(TAG, longitude+", "+latitude)
 
                 marker.itemName = nameList.get(i)
                 marker.tag = 0
@@ -115,7 +115,7 @@ class ScreeningClinicMap : AppCompatActivity() {
                 marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
                 mapView.addPOIItem(marker)
 
-                Log.d(TAG, "마커 표시 완료")
+//                Log.d(TAG, "마커 표시 완료")
 
             }
         }, 4000)
