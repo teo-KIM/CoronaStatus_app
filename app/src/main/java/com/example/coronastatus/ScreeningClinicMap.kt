@@ -25,28 +25,25 @@ class ScreeningClinicMap : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
 
-        val mapView = MapView(this)
 
-        val mapViewContainer = map_view as ViewGroup
-
-        mapViewContainer.addView(mapView)
 
         placeMarker()
 
-        val marker = MapPOIItem()
-        marker.itemName = "진료소"
-        marker.tag = 0
-        marker.mapPoint = MapPoint.mapPointWithGeoCoord(37.53737528.toDouble(), 127.00557633.toDouble())
-        marker.markerType = MapPOIItem.MarkerType.BluePin
-        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-        mapView.addPOIItem(marker)
-
-        marker.itemName = "진료소"
-        marker.tag = 0
-        marker.mapPoint = MapPoint.mapPointWithGeoCoord(37.500545.toDouble(), 126.985867.toDouble())
-        marker.markerType = MapPOIItem.MarkerType.BluePin
-        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-        mapView.addPOIItem(marker)
+//        val marker = MapPOIItem()
+//        marker.itemName = "진료소"
+//        marker.tag = 0
+//        marker.mapPoint =
+//            MapPoint.mapPointWithGeoCoord(37.53737528.toDouble(), 127.00557633.toDouble())
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+//        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+//        mapView.addPOIItem(marker)
+//
+//        marker.itemName = "진료소"
+//        marker.tag = 0
+//        marker.mapPoint = MapPoint.mapPointWithGeoCoord(37.500545.toDouble(), 126.985867.toDouble())
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+//        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+//        mapView.addPOIItem(marker)
 
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
@@ -72,7 +69,7 @@ class ScreeningClinicMap : AppCompatActivity() {
                 //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
                 val body = response?.body()?.string()
-                Log.d(TAG, "Success to execute request! : $body")
+//                Log.d(TAG, "Success to execute request! : $body")
 
                 val jObject = JSONObject(body)
                 val jArray = jObject.getJSONArray("infected")
@@ -86,23 +83,15 @@ class ScreeningClinicMap : AppCompatActivity() {
 
                     val latlong = obj.getString("latlong")
                     latlongList.add(latlong)
-                    //today = db에 저장된 경도,위도
+                    //latlong = db에 저장된 경도,위도
 
                     val description = obj.getString("description")
                     descriptionList.add(description)
 
-                    Log.d(TAG, "name : "+ name)
+//                    Log.d(TAG, "latlong : "+ latlong)
 //                    Log.d(TAG, "classification($i) : $classification")
                 }
 
-                //data class 생성 후 전체 json 데이터를 한번에 파싱 하려고 했으나 데이터를 가져올 때 바로 파싱하는 것으로 로직 변경
-                //Gson으로 파싱
-//                val gson = GsonBuilder().create()
-//                val list = gson.fromJson(body, JsonObj::class.java)
-
-                //결과가 나오면 바로 텍스트뷰에 넣어야됨
-//                Log.d(TAG, list.result[0].classification)
-//                Log.d(TAG, "$list")
 
             }
 
@@ -111,6 +100,38 @@ class ScreeningClinicMap : AppCompatActivity() {
                 println("Failed to execute request!")
             }
         })
+
+        val mapView = MapView(this)
+
+        val mapViewContainer = map_view as ViewGroup
+
+        mapViewContainer.addView(mapView)
+
+        val marker = MapPOIItem()
+
+        Handler().postDelayed({
+            for (i in 0 until nameList.size) {
+
+                var latlong = latlongList.get(i).split(", ")
+
+                var longitude = latlong[0]
+                var latitude = latlong[1].trim()
+
+                Log.d(TAG, nameList.get(i))
+                Log.d(TAG, longitude+", "+latitude)
+
+                marker.itemName = nameList.get(i)
+                marker.tag = 0
+                marker.mapPoint =
+                    MapPoint.mapPointWithGeoCoord(longitude.toDouble(), latitude.toDouble())
+                marker.markerType = MapPOIItem.MarkerType.BluePin
+                marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+                mapView.addPOIItem(marker)
+
+                Log.d(TAG, "마커 표시 완료")
+
+            }
+        }, 2000)
 
 
     }
