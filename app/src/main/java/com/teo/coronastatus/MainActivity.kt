@@ -1,6 +1,7 @@
 package com.teo.coronastatus
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -36,6 +37,9 @@ class MainActivity : AppCompatActivity() {
         now_tv.setText(formatDate)
 
         fetchJson()
+
+        board_btn.setImageResource(R.drawable.board_click)
+        board_tv.setTextColor(Color.parseColor("#0d64b2"))
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java);
