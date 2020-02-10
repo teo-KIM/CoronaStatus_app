@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         fetchJson()
 
+        //현재 MainActivity에 있다는 것을 알려주기 위함
         board_btn.setImageResource(R.drawable.board_click)
         board_tv.setTextColor(Color.parseColor("#0d64b2"))
 
