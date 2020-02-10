@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:216018507832:android:44ddb6795e6316b362aecd",
         "android_client_info": {
-          "package_name": "com.example.coronastatus"
+          "package_name": "com.teo.coronastatus"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "216018507832-je8l9ne6ucl4psafunahlaohvq8t6upr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.coronastatus",
+            "package_name": "com.teo.coronastatus",
             "certificate_hash": "d8ffaac5e30144517bad0a312b90075fd693db38"
           }
         },

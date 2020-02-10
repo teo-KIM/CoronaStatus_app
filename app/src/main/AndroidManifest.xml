@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.coronastatus">
+    package="com.teo.coronastatus">
 
-    //인터넷 연결 동의
+<!--    인터넷 연결 동의-->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    //인터넷 연결 상태 확인 동의
+<!--    인터넷 연결 상태 확인 동의-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    //내 위치 확인 동의
+<!--    내 위치 확인 동의-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/ic_launcher_virus"
+        android:label="코로나 현황"
+        android:roundIcon="@mipmap/ic_launcher_virus_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
@@ -48,7 +48,7 @@
             android:value="ecc0f0fa8933a9285b69375be86272ea" />
 
         <activity
-            android:name=".SplashActivity"
+            android:name="com.teo.coronastatus.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,7 +56,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.teo.coronastatus.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -64,10 +64,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScreeningClinicMap" />
+        <activity android:name="com.teo.coronastatus.ScreeningClinicMap" />
+        <activity android:name="com.teo.coronastatus.CodeOfConduct" />
 
-<!--        MyFirebaseMessagingService 서비스 설정-->
-        <service android:name=".MyFirebaseMessagingService">
+        <!--        MyFirebaseMessagingService 서비스 설정-->
+        <service android:name="com.teo.coronastatus.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

@@ -1,10 +1,9 @@
-package com.example.coronastatus
+package com.teo.coronastatus
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
@@ -12,6 +11,8 @@ import org.json.JSONObject
 import java.io.IOException
 import java.lang.NullPointerException
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 
 private val TAG: String = MainActivity::class.java.simpleName
 
@@ -28,6 +29,11 @@ class MainActivity : AppCompatActivity() {
         }catch (e:NullPointerException){
             e.printStackTrace()
         }
+        val now = System.currentTimeMillis()
+        val date = Date(now)
+        val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val formatDate = dateNow.format(date)
+        now_tv.setText(formatDate)
 
         fetchJson()
 
@@ -36,9 +42,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        diagnose_btn.setOnClickListener {
+            val intent = Intent(this, CodeOfConduct::class.java);
+            startActivity(intent)
+        }
+
         refresh_lottie.setOnClickListener {
             fetchJson()
             refresh_lottie.playAnimation()
+            val now = System.currentTimeMillis()
+            val date = Date(now)
+            val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+            val formatDate = dateNow.format(date)
+            now_tv.setText(formatDate)
         }
 
     }
@@ -109,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                         5 -> symptom.setText(today_array[i].toString())
                     }
                 }
-            }, 200)
+            }, 400)
 
 
 
