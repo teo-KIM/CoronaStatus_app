@@ -125,4 +125,11 @@ class ScreeningClinicMap : AppCompatActivity() {
 
 
     }
+
+    //back 버튼 누를 시 현황판 (Main) 액티비티로 이동
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, MainActivity::class.java);
+        startActivity(intent)
+    }
 }
