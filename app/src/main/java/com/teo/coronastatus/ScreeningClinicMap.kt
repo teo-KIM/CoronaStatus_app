@@ -1,6 +1,7 @@
 package com.teo.coronastatus
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.ViewGroup
@@ -23,6 +24,10 @@ class ScreeningClinicMap : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
+
+        //현재 ScreeningClinicMap에 있다는 것을 알려주기 위함
+        map_btn.setImageResource(R.drawable.ic_map_click)
+        map_tv.setTextColor(Color.parseColor("#0d64b2"))
 
         val mapView = MapView(this)
 
@@ -119,5 +124,12 @@ class ScreeningClinicMap : AppCompatActivity() {
         }, 4000)
 
 
+    }
+
+    //back 버튼 누를 시 현황판 (Main) 액티비티로 이동
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, MainActivity::class.java);
+        startActivity(intent)
     }
 }

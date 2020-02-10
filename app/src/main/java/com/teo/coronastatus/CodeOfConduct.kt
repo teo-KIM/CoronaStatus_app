@@ -1,6 +1,7 @@
 package com.teo.coronastatus
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -17,6 +18,10 @@ class CodeOfConduct : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.code_of_conduct)
+
+        //현재 CodeOfConduct에 있다는 것을 알려주기 위함
+        diagnose_btn.setImageResource(R.drawable.doctor_click)
+        diagnose_tv.setTextColor(Color.parseColor("#0d64b2"))
 
         val myWebView = web_view as WebView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -82,5 +87,12 @@ class CodeOfConduct : AppCompatActivity() {
         }, 300)
 
 
+    }
+
+    //back 버튼 누를 시 현황판 (Main) 액티비티로 이동
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, MainActivity::class.java);
+        startActivity(intent)
     }
 }

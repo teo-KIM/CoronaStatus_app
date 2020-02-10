@@ -1,6 +1,7 @@
 package com.teo.coronastatus
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -13,10 +14,19 @@ import java.lang.NullPointerException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.Toast
+import android.widget.Toast.makeText
+
 
 private val TAG: String = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
+
+
+    //back 버튼 누를 때 누른 시간을 담을 변수
+    //onBackPressed() 메소드에서 사용
+    var second_time = 0L
+    var first_time = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +46,10 @@ class MainActivity : AppCompatActivity() {
         now_tv.setText(formatDate)
 
         fetchJson()
+
+        //현재 MainActivity에 있다는 것을 알려주기 위함
+        board_btn.setImageResource(R.drawable.board_click)
+        board_tv.setTextColor(Color.parseColor("#0d64b2"))
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java);
@@ -127,8 +141,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }, 400)
 
+    }
 
-
+    override fun onBackPressed() {
+        //TODO toast.cancel()이 있는데도 불구하고 토스트 메세지가 바로 없어지지 않음. 수정 요망
+        second_time = System.currentTimeMillis()
+        val toast = makeText(this@MainActivity, "한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
+        toast.show()
+        if (second_time - first_time < 2000) {
+            super.onBackPressed()
+            toast.cancel()
+            finishAffinity()
+        }
+        first_time = System.currentTimeMillis()
     }
 
 }
