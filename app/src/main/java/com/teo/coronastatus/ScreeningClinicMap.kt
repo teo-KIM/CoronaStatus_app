@@ -29,11 +29,16 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 
 
-class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener , MapView.POIItemEventListener{
+class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener,
+    MapView.POIItemEventListener {
 
     private val TAG: String = ScreeningClinicMap::class.java.simpleName
 
     lateinit var mapView: MapView
+
+    lateinit var patients_location_markers: Array<MapPOIItem?>
+    lateinit var patients_hospital_markers: Array<MapPOIItem?>
+
 
     //맵에 표시되는 이모티콘들이 눌려있는지 아닌지를 구분하기 위한 변수
     var patient_location_click = 0
@@ -81,25 +86,30 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         patient_location_btn.setOnClickListener {
 
-            if(patient_location_click == 0){
+            if (patient_location_click == 0) {
                 patientPlaceMarker(mapView)
                 patient_location_click = 1
-                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT).show()
-            }else{
+                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
                 patient_location_click = 0
-                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT)
+                    .show()
+                mapView.removePOIItems(patients_location_markers)
             }
         }
 
         patient_hospital_btn.setOnClickListener {
-            if(patient_hospital_click == 0){
+            if (patient_hospital_click == 0) {
                 patient_hospital_click = 1
                 patientHospitalMarker(mapView)
-                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT).show()
-            }else{
+                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
                 patient_hospital_click = 0
-                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT).show()
-
+                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT)
+                    .show()
+                mapView.removePOIItems(patients_hospital_markers)
             }
         }
         //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
@@ -149,6 +159,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
     override fun onCalloutBalloonOfPOIItemTouched(
         p0: MapView?,
         p1: MapPOIItem?,
@@ -156,9 +167,11 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     ) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
     override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
     override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -328,7 +341,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     //--------------------------------마커 찍는 메소드 시작
 
     //확진자가 입원중인 병원에 마커를 찍어주는 메소드
-    fun patientHospitalMarker(mapView : MapView){
+    fun patientHospitalMarker(mapView: MapView) {
         val url = URL("https://www.portfoliobyteo.kro.kr/getPatientHospital.php")
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
@@ -339,7 +352,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response?) {
-                Log.d(TAG, "onResponse 시작 : "+System.currentTimeMillis())
+//                Log.d(TAG, "onResponse 시작 : "+System.currentTimeMillis())
                 //응답이 있을 경우 call은 무조건 null이 아니므로 ?를 쓰지 않는다.
                 //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
                 //("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -363,7 +376,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
 
                 }
-                Log.d(TAG, "onResponse 끝 : "+System.currentTimeMillis())
+//                Log.d(TAG, "onResponse 끝 : "+System.currentTimeMillis())
 
             }
 
@@ -374,22 +387,21 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         })
 
 
-
-
         Handler().postDelayed({
-            Log.d(TAG, "handler 시작 : "+System.currentTimeMillis())
+            //            Log.d(TAG, "handler 시작 : "+System.currentTimeMillis())
+            patients_hospital_markers = arrayOfNulls<MapPOIItem>(nameList.size)
             for (i in 0 until nameList.size) {
 
                 var latlong = latlongList.get(i).split(", ")
 
-                Log.d(TAG, "latlongList : "+latlongList.get(i))
+//                Log.d(TAG, "latlongList : "+latlongList.get(i))
                 var longitude = latlong[0]
                 var latitude = latlong[1].trim()
 
 //                Log.d(TAG, nameList.get(i))
 //                Log.d(TAG, longitude+", "+latitude)
 
-                Log.d(TAG, "nameList : " +nameList.get(i))
+//                Log.d(TAG, "nameList : " +nameList.get(i))
 
                 val marker = MapPOIItem()
                 marker.itemName = nameList.get(i)
@@ -398,17 +410,19 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                     MapPoint.mapPointWithGeoCoord(longitude.toDouble(), latitude.toDouble())
                 marker.markerType = MapPOIItem.MarkerType.BluePin
                 marker.selectedMarkerType = MapPOIItem.MarkerType.BluePin
-                mapView.addPOIItem(marker)
 
-                Log.d(TAG, nameList.get(i))
-                Log.d(TAG, longitude+", "+latitude)
-                Log.d(TAG, "마커 표시 완료")
-
-//                Log.d(TAG, "마커 표시 완료")
-
+                patients_hospital_markers[i] = marker
             }
-            Log.d(TAG, "handler 끝 : "+System.currentTimeMillis())
-        }, 2000)
+            mapView.addPOIItems(patients_hospital_markers)
+
+
+//                mapView.addPOIItem(marker)
+//                Log.d(TAG, nameList.get(i))
+//                Log.d(TAG, longitude+", "+latitude)
+//                Log.d(TAG, "마커 표시 완료")
+//                Log.d(TAG, "마커 표시 완료")
+//            Log.d(TAG, "handler 끝 : "+System.currentTimeMillis())
+        }, 1000)
 
     }
 
@@ -463,11 +477,9 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             }
         })
 
-
-        val markers = arrayOfNulls<MapPOIItem>(nameList.size)
-
         Handler().postDelayed({
 
+            patients_location_markers = arrayOfNulls<MapPOIItem>(nameList.size)
             for (i in 0 until nameList.size) {
 
                 var latlong = latlongList.get(i).split(", ")
@@ -484,12 +496,11 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 marker.markerType = MapPOIItem.MarkerType.RedPin
                 marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
 //                mapView.addPOIItem(marker)
-                markers[i] = marker
+                patients_location_markers[i] = marker
             }
-            mapView.addPOIItems(markers)
-        }, 2000)
+            mapView.addPOIItems(patients_location_markers)
 
-
+        }, 1000)
 
     }
 
