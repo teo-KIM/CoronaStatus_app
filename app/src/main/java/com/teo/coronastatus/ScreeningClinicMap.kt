@@ -35,6 +35,10 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
     lateinit var mapView: MapView
 
+    //맵에 표시되는 이모티콘들이 눌려있는지 아닌지를 구분하기 위한 변수
+    var patient_location_click = 0
+    var patient_hospital_click = 0
+
     //내 위치 정보를 가져오기 위한 permission 관련 변수
     //checkRunTimePermission() 에서 사용
     val GPS_ENABLE_REQUEST_CODE = 201;
@@ -50,10 +54,12 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
 
-        Log.d(TAG, "onCreate")
+//        Log.d(TAG, "onCreate")
 
-        //현위치 버튼이 MapView 위로 올라오도록 설정
+        //아이콘들이 mapView 최상위로 올라오도록 설정
         location_btn.bringToFront()
+        patient_hospital_btn.bringToFront()
+        patient_location_btn.bringToFront()
 
         //현재 ScreeningClinicMap에 있다는 것을 알려주기 위함
         map_btn.setImageResource(R.drawable.ic_map_click)
@@ -71,8 +77,11 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             checkRunTimePermission()
         }
 
+        patient_location_btn.setOnClickListener {
+            placeMarker(mapView)
+        }
         //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
-        placeMarker(mapView)
+
 
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
@@ -139,17 +148,20 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy")
+        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
+        mapView.setShowCurrentLocationMarker(false)
+//        Log.d(TAG, "onDestroy")
+
     }
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onStop")
+//        Log.d(TAG, "onStop")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume")
+//        Log.d(TAG, "onResume")
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
