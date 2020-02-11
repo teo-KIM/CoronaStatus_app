@@ -1,5 +1,6 @@
 package com.teo.coronastatus
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -20,10 +21,28 @@ import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
+import androidx.core.app.ActivityCompat
+import net.daum.mf.map.n.api.internal.NativeMapLocationManager.setCurrentLocationTrackingMode
+import android.content.pm.PackageManager
+import android.Manifest.permission
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.util.Log
+import androidx.core.content.ContextCompat
+import net.daum.mf.map.n.api.internal.NativeMapLocationManager.setCurrentLocationTrackingMode
+
+
 
 
 abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener {
     private val TAG: String = MainActivity::class.java.simpleName
+
+    val mapView = MapView(this)
+
+    //내 위치 정보를 가져오기 위한 permission 관련 변수
+    //checkRunTimePermission() 에서 사용
+    val GPS_ENABLE_REQUEST_CODE = 201;
+    val PERMISSIONS_REQUEST_CODE = 100;
+    var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,15 +55,15 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         map_btn.setImageResource(R.drawable.ic_map_click)
         map_tv.setTextColor(Color.parseColor("#0d64b2"))
 
-        val mapView = MapView(this)
+
         val mapViewContainer = map_view as ViewGroup
         mapViewContainer.addView(mapView)
 
         mapView.setCurrentLocationEventListener(this)
 
-        if(!checkLocationServicesStatus()){
+        if (!checkLocationServicesStatus()) {
 //            showdialogForLocationServiceSetting()
-        }else{
+        } else {
             checkRunTimePermission()
         }
 
@@ -65,7 +84,8 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         location_btn.setOnClickListener {
             location_btn.visibility = View.GONE
             location_click_btn.visibility = View.VISIBLE
-            Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT)
+                .show()
             //현위치를 가져오고 보여주는 메소드
 
         }
@@ -75,19 +95,114 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
 
-    fun checkRunTimePermission(){
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode==PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
+
+            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
+            var check_result = true
+
+            // 모든 퍼미션을 허용했는지 체크한다.
+
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    check_result = false
+                    break
+                }
+            }
+
+
+            if (check_result) {
+                Log.d(TAG, "onRequestPermissionsResult() 메소드 실행")
+                //위치 값을 가져올 수 있음
+                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading)
+            } else {
+                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료한다. 2 가지 경우가 있습니다.
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        REQUIRED_PERMISSIONS[0]
+                    )
+                ) {
+
+                    Toast.makeText(
+                        this@ScreeningClinicMap,
+                        "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+
+
+                } else {
+
+                    Toast.makeText(
+                        this@ScreeningClinicMap,
+                        "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                }
+            }
+
+        }
 
     }
 
+    fun checkRunTimePermission() {
+        //런타임 퍼미션 처리
+        // 1. 위치 퍼미션 가지고 있는지 확인
+        val hasFineLocationPermission = ContextCompat.checkSelfPermission(
+            this@ScreeningClinicMap,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED) {
+            // 2. 이미 퍼미션을 가지고 있다면 위치 값을 가져올 수 있음
+            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading)
+
+        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요. 2가지 경우(3-1, 4-1)가 있다.
+
+            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this@ScreeningClinicMap,
+                    REQUIRED_PERMISSIONS[0]
+                )
+            ) {
+
+                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
+                Toast.makeText(this@ScreeningClinicMap, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG)
+                    .show()
+                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(
+                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
+                    PERMISSIONS_REQUEST_CODE
+                )
+
+            } else {
+                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
+                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(
+                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
+                    PERMISSIONS_REQUEST_CODE
+                )
+            }
+
+        }
+    }
+
     //현재 위치 서비스가 켜져있는지 확인하는 메소드
-    fun checkLocationServicesStatus() : Boolean {
+    fun checkLocationServicesStatus(): Boolean {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
-    fun placeMarker(mapView : MapView) {
+    fun placeMarker(mapView: MapView) {
 
         val url = URL("https://www.portfoliobyteo.kro.kr/getInfectedLocation.php")
         val request = Request.Builder().url(url).build()
@@ -163,6 +278,24 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         }, 4000)
 
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+
+            GPS_ENABLE_REQUEST_CODE ->
+
+                //사용자가 GPS 활성 시켰는지 검사
+                if (checkLocationServicesStatus()) {
+                    if (checkLocationServicesStatus()) {
+
+                        Log.d(TAG, "onActivityResult : GPS 활성화 되있음")
+                        checkRunTimePermission()
+                        return
+                    }
+                }
+        }
     }
 
     //back 버튼 누를 시 현황판 (Main) 액티비티로 이동
