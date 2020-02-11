@@ -1,7 +1,9 @@
 package com.teo.coronastatus
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -20,7 +22,7 @@ import java.io.IOException
 import java.net.URL
 
 
-class ScreeningClinicMap : AppCompatActivity() {
+abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener {
     private val TAG: String = MainActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +37,16 @@ class ScreeningClinicMap : AppCompatActivity() {
         map_tv.setTextColor(Color.parseColor("#0d64b2"))
 
         val mapView = MapView(this)
-
         val mapViewContainer = map_view as ViewGroup
-
         mapViewContainer.addView(mapView)
+
+        mapView.setCurrentLocationEventListener(this)
+
+        if(!checkLocationServicesStatus()){
+//            showdialogForLocationServiceSetting()
+        }else{
+//            checkRunTimePermission()
+        }
 
         //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
         placeMarker(mapView)
@@ -65,6 +73,12 @@ class ScreeningClinicMap : AppCompatActivity() {
             location_click_btn.visibility = View.GONE
             location_btn.visibility = View.VISIBLE
         }
+    }
+
+    fun checkLocationServicesStatus() : Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     fun placeMarker(mapView : MapView) {
