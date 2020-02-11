@@ -54,6 +54,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
 
+        patient_location_click = 0
+        patient_hospital_click = 0
 //        Log.d(TAG, "onCreate")
 
         //아이콘들이 mapView 최상위로 올라오도록 설정
@@ -78,7 +80,27 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         }
 
         patient_location_btn.setOnClickListener {
-            placeMarker(mapView)
+
+            if(patient_location_click == 0){
+                patientPlaceMarker(mapView)
+                patient_location_click = 1
+                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT).show()
+
+            }else{
+                patient_location_click = 0
+                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        patient_hospital_btn.setOnClickListener {
+            if(patient_hospital_click == 0){
+                patient_hospital_click = 1
+                patientHospitalMarker(mapView)
+                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT).show()
+            }else{
+                patient_hospital_click = 0
+                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT).show()
+            }
         }
         //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
 
@@ -146,23 +168,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         builder.create().show();
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
-        mapView.setShowCurrentLocationMarker(false)
-//        Log.d(TAG, "onDestroy")
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        Log.d(TAG, "onStop")
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        Log.d(TAG, "onResume")
-    }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 //        ("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -299,7 +304,81 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
-    fun placeMarker(mapView: MapView) {
+    //--------------------------------마커 찍는 메소드 시작
+
+    //확진자가 입원중인 병원에 마커를 찍어주는 메소드
+    fun patientHospitalMarker(mapView : MapView){
+        val url = URL("https://www.portfoliobyteo.kro.kr/getPatientHospital.php")
+        val request = Request.Builder().url(url).build()
+        val client = OkHttpClient()
+
+        //db에서 가져올 데이터를 담을 List
+        val nameList = mutableListOf<String>()
+        val latlongList = mutableListOf<String>()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response?) {
+                //응답이 있을 경우 call은 무조건 null이 아니므로 ?를 쓰지 않는다.
+                //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
+                //("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                val body = response?.body()?.string()
+//                Log.d(TAG, "Success to execute request! : $body")
+
+                val jObject = JSONObject(body)
+                val jArray = jObject.getJSONArray("patientHospital")
+
+                for (i in 0 until jArray.length()) {
+                    val obj = jArray.getJSONObject(i)
+
+                    val name = obj.getString("name")
+                    nameList.add(name)
+                    //name = db에 저장된 확진자가 입원한 병원
+
+                    val latlong = obj.getString("latlong")
+                    latlongList.add(latlong)
+                    //latlong = db에 저장된 경도,위도
+
+                }
+
+            }
+
+            override fun onFailure(call: Call?, e: IOException?) {
+                //("not implemented") //To change body of created functions use File | Settings | File Templates.
+                println("확진자가 입원한 병원의 위치 가져오기를 실패했습니다!")
+            }
+        })
+
+        val marker = MapPOIItem()
+
+        Handler().postDelayed({
+            for (i in 0 until nameList.size) {
+
+                var latlong = latlongList.get(i).split(", ")
+
+                var longitude = latlong[0]
+                var latitude = latlong[1].trim()
+
+//                Log.d(TAG, nameList.get(i))
+//                Log.d(TAG, longitude+", "+latitude)
+
+                marker.itemName = nameList.get(i)
+                marker.tag = 0
+                marker.mapPoint =
+                    MapPoint.mapPointWithGeoCoord(longitude.toDouble(), latitude.toDouble())
+                marker.markerType = MapPOIItem.MarkerType.RedPin
+                marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+                mapView.addPOIItem(marker)
+
+//                Log.d(TAG, "마커 표시 완료")
+
+            }
+        }, 1000)
+
+    }
+
+    //확진자가 있었던 곳에 핀을 찍어주는 메소드
+    fun patientPlaceMarker(mapView: MapView) {
 
         val url = URL("https://www.portfoliobyteo.kro.kr/getInfectedLocation.php")
         val request = Request.Builder().url(url).build()
@@ -401,4 +480,22 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         val intent = Intent(this, MainActivity::class.java);
         startActivity(intent)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
+        mapView.setShowCurrentLocationMarker(false)
+//        Log.d(TAG, "onDestroy")
+
+    }
+
+    /*override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop")
+    }
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
+    }*/
+
 }
