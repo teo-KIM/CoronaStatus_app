@@ -45,7 +45,7 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         if(!checkLocationServicesStatus()){
 //            showdialogForLocationServiceSetting()
         }else{
-//            checkRunTimePermission()
+            checkRunTimePermission()
         }
 
         //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
@@ -75,6 +75,12 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         }
     }
 
+
+    fun checkRunTimePermission(){
+
+    }
+
+    //현재 위치 서비스가 켜져있는지 확인하는 메소드
     fun checkLocationServicesStatus() : Boolean {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
