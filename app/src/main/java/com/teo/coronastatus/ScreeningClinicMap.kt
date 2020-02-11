@@ -85,7 +85,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 patientPlaceMarker(mapView)
                 patient_location_click = 1
                 Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT).show()
-
             }else{
                 patient_location_click = 0
                 Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT).show()
@@ -100,6 +99,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             }else{
                 patient_hospital_click = 0
                 Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT).show()
+
             }
         }
         //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
@@ -123,7 +123,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             location_click_btn.visibility = View.VISIBLE
             Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT)
                 .show()
-            //현위치를 가져오고 보여주는 메소드
 
         }
         location_click_btn.setOnClickListener {
@@ -132,6 +131,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         }
     }
 
+    //MapView.CurrentLocationEventListener implement하기 위함
     override fun onCurrentLocationUpdateFailed(p0: MapView?) {
         //To change body of created functions use File | Settings | File Templates.
     }
@@ -144,10 +144,11 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         //To change body of created functions use File | Settings | File Templates.
     }
 
+
+    //MapView.POIItemEventListener implement하기 위함
     override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
     override fun onCalloutBalloonOfPOIItemTouched(
         p0: MapView?,
         p1: MapPOIItem?,
@@ -155,15 +156,15 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     ) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
     override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
     override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+
+    //위치 서비스가 비활성화 되어있을 경우 다이얼로그를 띄워서 활성화 할 수 있도록 하는 메소드
     fun showDialogForLocationServiceSetting() {
 
         val builder = AlertDialog.Builder(this@ScreeningClinicMap)
@@ -409,9 +410,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             Log.d(TAG, "handler 끝 : "+System.currentTimeMillis())
         }, 2000)
 
-
-
     }
+
 
     //확진자가 있었던 곳에 핀을 찍어주는 메소드
     fun patientPlaceMarker(mapView: MapView) {
@@ -464,6 +464,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         })
 
 
+        val markers = arrayOfNulls<MapPOIItem>(nameList.size)
 
         Handler().postDelayed({
 
@@ -475,20 +476,20 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 var latitude = latlong[1].trim()
 
                 val marker = MapPOIItem()
+
                 marker.itemName = nameList.get(i)
                 marker.tag = 0
                 marker.mapPoint =
                     MapPoint.mapPointWithGeoCoord(longitude.toDouble(), latitude.toDouble())
                 marker.markerType = MapPOIItem.MarkerType.RedPin
                 marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-                mapView.addPOIItem(marker)
-
-//                Log.d(TAG, nameList.get(i))
-//                Log.d(TAG, longitude+", "+latitude)
-//                Log.d(TAG, "마커 표시 완료")
-
+//                mapView.addPOIItem(marker)
+                markers[i] = marker
             }
+            mapView.addPOIItems(markers)
         }, 2000)
+
+
 
     }
 
