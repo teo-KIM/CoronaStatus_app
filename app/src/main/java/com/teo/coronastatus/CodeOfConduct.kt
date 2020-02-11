@@ -36,12 +36,14 @@ class CodeOfConduct : AppCompatActivity() {
 
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 

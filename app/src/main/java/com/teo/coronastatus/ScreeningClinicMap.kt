@@ -76,11 +76,13 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
         diagnose_btn.setOnClickListener {
             val intent = Intent(this, CodeOfConduct::class.java);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 

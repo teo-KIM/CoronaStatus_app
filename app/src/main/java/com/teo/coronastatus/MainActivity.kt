@@ -53,11 +53,13 @@ class MainActivity : AppCompatActivity() {
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
         diagnose_btn.setOnClickListener {
             val intent = Intent(this, CodeOfConduct::class.java);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
