@@ -22,21 +22,18 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
 import androidx.core.app.ActivityCompat
-import net.daum.mf.map.n.api.internal.NativeMapLocationManager.setCurrentLocationTrackingMode
 import android.content.pm.PackageManager
-import android.Manifest.permission
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.util.Log
 import androidx.core.content.ContextCompat
-import net.daum.mf.map.n.api.internal.NativeMapLocationManager.setCurrentLocationTrackingMode
+
 
 class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener {
 
-    private val TAG: String = MainActivity::class.java.simpleName
+    private val TAG: String = ScreeningClinicMap::class.java.simpleName
 
-    lateinit var mapView : MapView
+    lateinit var mapView: MapView
 
     //내 위치 정보를 가져오기 위한 permission 관련 변수
     //checkRunTimePermission() 에서 사용
@@ -52,6 +49,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
+
+        Log.d(TAG, "onCreate")
 
         //현위치 버튼이 MapView 위로 올라오도록 설정
         location_btn.bringToFront()
@@ -99,6 +98,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             location_btn.visibility = View.VISIBLE
         }
     }
+
     override fun onCurrentLocationUpdateFailed(p0: MapView?) {
         //To change body of created functions use File | Settings | File Templates.
     }
@@ -118,7 +118,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         builder.setTitle("위치 서비스 비활성화");
         builder.setMessage(
             "앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
-                    + "위치 설정을 수정하실래요?"
+                    + "위치 설정을 수정하시겠습니까?"
         );
         builder.setCancelable(true);
 
@@ -137,7 +137,17 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "onDestroy")
+    }
 
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
@@ -162,7 +172,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         //전역변수로 현재 좌표 저장
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
-        Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
+//        Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
 
         //트래킹 모드가 아닌 단순 현재위치 업데이트일 경우, 한번만 위치 업데이트하고 트래킹을 중단시키기 위한 로직
 //        if (!isTrackingMode) {
@@ -184,7 +194,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             var check_result = true
 
             // 모든 퍼미션을 허용했는지 체크한다.
-
             for (result in grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
                     check_result = false
@@ -192,14 +201,12 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 }
             }
 
-
             if (check_result) {
                 Log.d(TAG, "onRequestPermissionsResult() 메소드 실행")
                 //위치 값을 가져올 수 있음
-                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading)
+                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving)
             } else {
-                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료한다. 2 가지 경우가 있습니다.
-
+                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료한다. 2 가지 경우가 있다.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
                         this,
                         REQUIRED_PERMISSIONS[0]
@@ -213,7 +220,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                     ).show()
                     finish()
 
-
                 } else {
 
                     Toast.makeText(
@@ -221,12 +227,9 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                         "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ",
                         Toast.LENGTH_LONG
                     ).show()
-
                 }
             }
-
         }
-
     }
 
     fun checkRunTimePermission() {
@@ -239,7 +242,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED) {
             // 2. 이미 퍼미션을 가지고 있다면 위치 값을 가져올 수 있음
-            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading)
+            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving)
 
         } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요. 2가지 경우(3-1, 4-1)가 있다.
 
