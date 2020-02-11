@@ -67,7 +67,7 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         mapView.setCurrentLocationEventListener(this)
 
         if (!checkLocationServicesStatus()) {
-//            showdialogForLocationServiceSetting()
+            showDialogForLocationServiceSetting()
         } else {
             checkRunTimePermission()
         }
@@ -98,6 +98,10 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
             location_click_btn.visibility = View.GONE
             location_btn.visibility = View.VISIBLE
         }
+    }
+
+    fun showDialogForLocationServiceSetting(){
+
     }
 
     override fun onDestroy() {
