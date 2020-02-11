@@ -4,7 +4,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.board_btn
 import kotlinx.android.synthetic.main.screening_clinic_map.*
@@ -26,6 +28,20 @@ class ScreeningClinicMap : AppCompatActivity() {
         setContentView(R.layout.screening_clinic_map)
 
         location_btn.bringToFront()
+
+        //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
+        location_btn.setOnClickListener {
+            location_btn.visibility = View.GONE
+            location_click_btn.visibility = View.VISIBLE
+            Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT).show()
+            //현위치를 가져오고 보여주는 메소드
+
+        }
+
+        location_click_btn.setOnClickListener {
+            location_click_btn.visibility = View.GONE
+            location_btn.visibility = View.VISIBLE
+        }
 
         //현재 ScreeningClinicMap에 있다는 것을 알려주기 위함
         map_btn.setImageResource(R.drawable.ic_map_click)
