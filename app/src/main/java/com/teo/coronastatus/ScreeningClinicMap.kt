@@ -32,11 +32,11 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import net.daum.mf.map.n.api.internal.NativeMapLocationManager.setCurrentLocationTrackingMode
 
+class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener {
 
-abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener {
     private val TAG: String = MainActivity::class.java.simpleName
 
-    val mapView = MapView(this)
+    lateinit var mapView : MapView
 
     //내 위치 정보를 가져오기 위한 permission 관련 변수
     //checkRunTimePermission() 에서 사용
@@ -60,7 +60,7 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         map_btn.setImageResource(R.drawable.ic_map_click)
         map_tv.setTextColor(Color.parseColor("#0d64b2"))
 
-
+        mapView = MapView(this@ScreeningClinicMap)
         val mapViewContainer = map_view as ViewGroup
         mapViewContainer.addView(mapView)
 
@@ -99,6 +99,17 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
             location_btn.visibility = View.VISIBLE
         }
     }
+    override fun onCurrentLocationUpdateFailed(p0: MapView?) {
+        //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
+        //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
+        //To change body of created functions use File | Settings | File Templates.
+    }
 
     fun showDialogForLocationServiceSetting() {
 
@@ -111,13 +122,14 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         );
         builder.setCancelable(true);
 
-        builder.setPositiveButton("설정") {
-                dialog: DialogInterface?, which: Int -> val callGPSSettingIntent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        builder.setPositiveButton("설정") { dialog: DialogInterface?, which: Int ->
+            val callGPSSettingIntent =
+                Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE)
         }
 
-        builder.setNegativeButton("취소"){
-            dialog: DialogInterface?, which: Int -> dialog?.cancel()
+        builder.setNegativeButton("취소") { dialog: DialogInterface?, which: Int ->
+            dialog?.cancel()
         }
 
         builder.create().show();
