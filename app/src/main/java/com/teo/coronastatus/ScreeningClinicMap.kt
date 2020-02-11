@@ -27,21 +27,8 @@ class ScreeningClinicMap : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
 
+        //현위치 버튼이 MapView 위로 올라오도록 설정
         location_btn.bringToFront()
-
-        //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
-        location_btn.setOnClickListener {
-            location_btn.visibility = View.GONE
-            location_click_btn.visibility = View.VISIBLE
-            Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT).show()
-            //현위치를 가져오고 보여주는 메소드
-
-        }
-
-        location_click_btn.setOnClickListener {
-            location_click_btn.visibility = View.GONE
-            location_btn.visibility = View.VISIBLE
-        }
 
         //현재 ScreeningClinicMap에 있다는 것을 알려주기 위함
         map_btn.setImageResource(R.drawable.ic_map_click)
@@ -53,6 +40,7 @@ class ScreeningClinicMap : AppCompatActivity() {
 
         mapViewContainer.addView(mapView)
 
+        //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
         placeMarker(mapView)
 
         board_btn.setOnClickListener {
@@ -63,6 +51,19 @@ class ScreeningClinicMap : AppCompatActivity() {
         diagnose_btn.setOnClickListener {
             val intent = Intent(this, CodeOfConduct::class.java);
             startActivity(intent)
+        }
+
+        //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
+        location_btn.setOnClickListener {
+            location_btn.visibility = View.GONE
+            location_click_btn.visibility = View.VISIBLE
+            Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT).show()
+            //현위치를 가져오고 보여주는 메소드
+
+        }
+        location_click_btn.setOnClickListener {
+            location_click_btn.visibility = View.GONE
+            location_btn.visibility = View.VISIBLE
         }
     }
 
