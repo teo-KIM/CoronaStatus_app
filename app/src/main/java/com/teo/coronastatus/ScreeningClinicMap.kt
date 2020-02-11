@@ -318,6 +318,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response?) {
+                Log.d(TAG, "onResponse 시작 : "+System.currentTimeMillis())
                 //응답이 있을 경우 call은 무조건 null이 아니므로 ?를 쓰지 않는다.
                 //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
                 //("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -339,7 +340,9 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                     latlongList.add(latlong)
                     //latlong = db에 저장된 경도,위도
 
+
                 }
+                Log.d(TAG, "onResponse 끝 : "+System.currentTimeMillis())
 
             }
 
@@ -351,29 +354,41 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         val marker = MapPOIItem()
 
+
         Handler().postDelayed({
+            Log.d(TAG, "handler 시작 : "+System.currentTimeMillis())
             for (i in 0 until nameList.size) {
+
 
                 var latlong = latlongList.get(i).split(", ")
 
+                Log.d(TAG, "latlongList : "+latlongList.get(i))
                 var longitude = latlong[0]
                 var latitude = latlong[1].trim()
 
 //                Log.d(TAG, nameList.get(i))
 //                Log.d(TAG, longitude+", "+latitude)
 
+                Log.d(TAG, "nameList : " +nameList.get(i))
                 marker.itemName = nameList.get(i)
                 marker.tag = 0
                 marker.mapPoint =
                     MapPoint.mapPointWithGeoCoord(longitude.toDouble(), latitude.toDouble())
-                marker.markerType = MapPOIItem.MarkerType.RedPin
-                marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+                marker.markerType = MapPOIItem.MarkerType.BluePin
+                marker.selectedMarkerType = MapPOIItem.MarkerType.BluePin
                 mapView.addPOIItem(marker)
+
+                Log.d(TAG, nameList.get(i))
+                Log.d(TAG, longitude+", "+latitude)
+                Log.d(TAG, "마커 표시 완료")
 
 //                Log.d(TAG, "마커 표시 완료")
 
             }
-        }, 1000)
+            Log.d(TAG, "handler 끝 : "+System.currentTimeMillis())
+        }, 5000)
+
+
 
     }
 
@@ -430,15 +445,13 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         val marker = MapPOIItem()
 
         Handler().postDelayed({
+
             for (i in 0 until nameList.size) {
 
                 var latlong = latlongList.get(i).split(", ")
 
                 var longitude = latlong[0]
                 var latitude = latlong[1].trim()
-
-//                Log.d(TAG, nameList.get(i))
-//                Log.d(TAG, longitude+", "+latitude)
 
                 marker.itemName = nameList.get(i)
                 marker.tag = 0
@@ -448,13 +461,15 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
                 mapView.addPOIItem(marker)
 
-//                Log.d(TAG, "마커 표시 완료")
+                Log.d(TAG, nameList.get(i))
+                Log.d(TAG, longitude+", "+latitude)
+                Log.d(TAG, "마커 표시 완료")
 
             }
-        }, 4000)
-
+        }, 5000)
 
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -478,6 +493,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(this, MainActivity::class.java);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
         startActivity(intent)
     }
 
