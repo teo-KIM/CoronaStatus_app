@@ -372,13 +372,12 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             }
         })
 
-        val marker = MapPOIItem()
+
 
 
         Handler().postDelayed({
             Log.d(TAG, "handler 시작 : "+System.currentTimeMillis())
             for (i in 0 until nameList.size) {
-
 
                 var latlong = latlongList.get(i).split(", ")
 
@@ -390,6 +389,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 //                Log.d(TAG, longitude+", "+latitude)
 
                 Log.d(TAG, "nameList : " +nameList.get(i))
+
+                val marker = MapPOIItem()
                 marker.itemName = nameList.get(i)
                 marker.tag = 0
                 marker.mapPoint =
@@ -406,7 +407,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
             }
             Log.d(TAG, "handler 끝 : "+System.currentTimeMillis())
-        }, 5000)
+        }, 2000)
 
 
 
@@ -462,7 +463,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             }
         })
 
-        val marker = MapPOIItem()
+
 
         Handler().postDelayed({
 
@@ -473,6 +474,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 var longitude = latlong[0]
                 var latitude = latlong[1].trim()
 
+                val marker = MapPOIItem()
                 marker.itemName = nameList.get(i)
                 marker.tag = 0
                 marker.mapPoint =
@@ -481,12 +483,12 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
                 mapView.addPOIItem(marker)
 
-                Log.d(TAG, nameList.get(i))
-                Log.d(TAG, longitude+", "+latitude)
-                Log.d(TAG, "마커 표시 완료")
+//                Log.d(TAG, nameList.get(i))
+//                Log.d(TAG, longitude+", "+latitude)
+//                Log.d(TAG, "마커 표시 완료")
 
             }
-        }, 5000)
+        }, 2000)
 
     }
 
