@@ -63,7 +63,7 @@ class ScreeningClinicMap : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response?) {
                 //응답이 있을 경우 call은 무조건 null이 아니므로 ?를 쓰지 않는다.
                 //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //("not implemented") //To change body of created functions use File | Settings | File Templates.
 
                 val body = response?.body()?.string()
 //                Log.d(TAG, "Success to execute request! : $body")
@@ -92,7 +92,7 @@ class ScreeningClinicMap : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call?, e: IOException?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //("not implemented") //To change body of created functions use File | Settings | File Templates.
                 println("Failed to execute request!")
             }
         })
