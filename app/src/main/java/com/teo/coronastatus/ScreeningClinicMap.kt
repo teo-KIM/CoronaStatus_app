@@ -26,11 +26,11 @@ import net.daum.mf.map.n.api.internal.NativeMapLocationManager.setCurrentLocatio
 import android.content.pm.PackageManager
 import android.Manifest.permission
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.util.Log
 import androidx.core.content.ContextCompat
 import net.daum.mf.map.n.api.internal.NativeMapLocationManager.setCurrentLocationTrackingMode
-
-
 
 
 abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener {
@@ -45,9 +45,9 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
     var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     //현재 위치(위도, 경도, 지도) 를 전역 변수로 저장 한 후 사용하기 위해 선언
-    lateinit var currentMapPoint : MapPoint
-    var mCurrentLat : Double = 0.0
-    var mCurrentLng : Double = 0.0
+    lateinit var currentMapPoint: MapPoint
+    var mCurrentLat: Double = 0.0
+    var mCurrentLng: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,8 +100,27 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         }
     }
 
-    fun showDialogForLocationServiceSetting(){
+    fun showDialogForLocationServiceSetting() {
 
+        val builder = AlertDialog.Builder(this@ScreeningClinicMap)
+
+        builder.setTitle("위치 서비스 비활성화");
+        builder.setMessage(
+            "앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
+                    + "위치 설정을 수정하실래요?"
+        );
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("설정") {
+                dialog: DialogInterface?, which: Int -> val callGPSSettingIntent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE)
+        }
+
+        builder.setNegativeButton("취소"){
+            dialog: DialogInterface?, which: Int -> dialog?.cancel()
+        }
+
+        builder.create().show();
     }
 
     override fun onDestroy() {
@@ -112,7 +131,7 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 //        ("not implemented") //To change body of created functions use File | Settings | File Templates.
 
-        val mapPointGeo =  p1?.getMapPointGeoCoord() as MapPoint.GeoCoordinate
+        val mapPointGeo = p1?.getMapPointGeoCoord() as MapPoint.GeoCoordinate
 
         Log.i(
             TAG,
@@ -124,7 +143,8 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
             )
         )
 
-        currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        currentMapPoint =
+            MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         //이 좌표로 지도 중심 이동
         mapView.setMapCenterPoint(currentMapPoint, true);
         //전역변수로 현재 좌표 저장
@@ -139,7 +159,6 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
     }
 
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -147,7 +166,7 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
     ) {
 
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode==PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
+        if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
 
             // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
             var check_result = true
@@ -220,7 +239,11 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
             ) {
 
                 // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
-                Toast.makeText(this@ScreeningClinicMap, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG)
+                Toast.makeText(
+                    this@ScreeningClinicMap,
+                    "이 앱을 실행하려면 위치 접근 권한이 필요합니다.",
+                    Toast.LENGTH_LONG
+                )
                     .show()
                 // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
                 ActivityCompat.requestPermissions(
