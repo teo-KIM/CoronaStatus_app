@@ -95,6 +95,13 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+    }
+
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
