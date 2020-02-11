@@ -29,7 +29,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 
 
-class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener {
+class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener , MapView.POIItemEventListener{
 
     private val TAG: String = ScreeningClinicMap::class.java.simpleName
 
@@ -142,6 +142,26 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
     override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
         //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
+        //("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(
+        p0: MapView?,
+        p1: MapPOIItem?,
+        p2: MapPOIItem.CalloutBalloonButtonType?
+    ) {
+        //("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
+        //("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
+        //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun showDialogForLocationServiceSetting() {

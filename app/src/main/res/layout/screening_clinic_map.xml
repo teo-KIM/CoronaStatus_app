@@ -23,7 +23,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        android:background="@android:color/transparent"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_my_location_black_24dp" />
@@ -131,7 +131,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="24dp"
-        android:background="@android:color/transparent"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_patients_hospital_24dp" />
@@ -142,7 +142,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="88dp"
         android:layout_marginEnd="24dp"
-        android:background="@android:color/transparent"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_do_not_disturb_red_35dp" />
