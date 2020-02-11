@@ -44,6 +44,11 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
     val PERMISSIONS_REQUEST_CODE = 100;
     var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
+    //현재 위치(위도, 경도, 지도) 를 전역 변수로 저장 한 후 사용하기 위해 선언
+    lateinit var currentMapPoint : MapPoint
+    var mCurrentLat : Double = 0.0
+    var mCurrentLng : Double = 0.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screening_clinic_map)
@@ -98,6 +103,35 @@ abstract class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocation
     override fun onDestroy() {
         super.onDestroy()
 
+    }
+
+    override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
+//        ("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val mapPointGeo =  p1?.getMapPointGeoCoord() as MapPoint.GeoCoordinate
+
+        Log.i(
+            TAG,
+            String.format(
+                "MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)",
+                mapPointGeo.latitude,
+                mapPointGeo.longitude,
+                p2
+            )
+        )
+
+        currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        //이 좌표로 지도 중심 이동
+        mapView.setMapCenterPoint(currentMapPoint, true);
+        //전역변수로 현재 좌표 저장
+        mCurrentLat = mapPointGeo.latitude;
+        mCurrentLng = mapPointGeo.longitude;
+        Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
+
+        //트래킹 모드가 아닌 단순 현재위치 업데이트일 경우, 한번만 위치 업데이트하고 트래킹을 중단시키기 위한 로직
+//        if (!isTrackingMode) {
+//            mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+//        }
     }
 
 
