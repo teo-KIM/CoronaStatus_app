@@ -57,18 +57,17 @@
         </activity>
 
         <activity android:name="com.teo.coronastatus.MainActivity"
-            android:launchMode="singleTask">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
         </activity>
         <activity android:name="com.teo.coronastatus.ScreeningClinicMap"
-            android:launchMode="singleTask"/>
+            />
         <activity android:name="com.teo.coronastatus.CodeOfConduct"
-            android:launchMode="singleTask"/>
+            />
 
         <!--        MyFirebaseMessagingService 서비스 설정-->
         <service android:name="com.teo.coronastatus.MyFirebaseMessagingService">
