@@ -36,9 +36,9 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
     lateinit var mapView: MapView
 
+    //마커를 전역변수로 만들어서 동일한 아이템을 켰다 껐다 할 수 있도록 하기 위함
     lateinit var patients_location_markers: Array<MapPOIItem?>
     lateinit var patients_hospital_markers: Array<MapPOIItem?>
-
 
     //맵에 표시되는 이모티콘들이 눌려있는지 아닌지를 구분하기 위한 변수
     var patient_location_click = 0
@@ -72,6 +72,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         map_btn.setImageResource(R.drawable.ic_map_click)
         map_tv.setTextColor(Color.parseColor("#0d64b2"))
 
+        //화면에 맵뷰를 보여준다
         mapView = MapView(this@ScreeningClinicMap)
         val mapViewContainer = map_view as ViewGroup
         mapViewContainer.addView(mapView)
