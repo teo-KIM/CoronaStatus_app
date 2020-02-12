@@ -87,6 +87,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         patient_location_btn.setOnClickListener {
 
+            //확진자가 돌아다닌 위치를 나타내주도록 하는 아이콘 클릭시
             if (patient_location_click == 0) {
                 patientPlaceMarker(mapView)
                 patient_location_click = 1
@@ -101,7 +102,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 patient_location_btn.setBackgroundColor(Color.WHITE)
             }
         }
-
+        //확진자가 입원해 있는 병원 위치를 나타내주도록 하는 아이콘 클릭시
         patient_hospital_btn.setOnClickListener {
             if (patient_hospital_click == 0) {
                 patient_hospital_click = 1
