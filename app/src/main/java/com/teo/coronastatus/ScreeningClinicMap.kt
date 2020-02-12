@@ -27,6 +27,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.util.Log
 import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.screening_clinic_map.view.*
 
 
 class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener,
@@ -93,7 +94,15 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 patient_location_click = 1
                 Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT)
                     .show()
-                patient_location_btn.setBackgroundColor(Color.BLACK)
+                //클릭한 경우 아이콘을 GONE으로 변화시키고 로딩중인 Lottie 표시
+                patient_location_btn.visibility = View.GONE
+                location_simple_loader.playAnimation()
+
+                Handler().postDelayed({
+                    patient_location_btn.setBackgroundColor(Color.BLACK)
+                    patient_location_btn.visibility = View.VISIBLE
+                }, 1000)
+
             } else {
                 patient_location_click = 0
                 Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT)
@@ -109,7 +118,17 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 patientHospitalMarker(mapView)
                 Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT)
                     .show()
-                patient_hospital_btn.setBackgroundColor(Color.BLACK)
+
+                //클릭한 경우 아이콘을 GONE으로 변화시키고 로딩중인 Lottie 표시
+                patient_hospital_btn.visibility = View.GONE
+                hospital_simple_loader.playAnimation()
+
+                Handler().postDelayed({
+                    patient_hospital_btn.setBackgroundColor(Color.BLACK)
+                    patient_hospital_btn.visibility = View.VISIBLE
+                }, 1000)
+
+
             } else {
                 patient_hospital_click = 0
                 Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT)
@@ -118,8 +137,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 patient_hospital_btn.setBackgroundColor(Color.WHITE)
             }
         }
-        //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
-
 
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
