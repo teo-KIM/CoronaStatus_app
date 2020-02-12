@@ -129,15 +129,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
         location_btn.setOnClickListener {
-            location_btn.visibility = View.GONE
-            location_click_btn.visibility = View.VISIBLE
             Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT)
                 .show()
-
-        }
-        location_click_btn.setOnClickListener {
-            location_click_btn.visibility = View.GONE
-            location_btn.visibility = View.VISIBLE
         }
     }
 
