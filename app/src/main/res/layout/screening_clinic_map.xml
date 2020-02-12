@@ -17,28 +17,16 @@
 
     <ImageButton
         android:id="@+id/location_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_my_location_black_24dp" />
-
-    <ImageButton
-        android:id="@+id/location_click_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="28dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_my_location_click_24dp"
-        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/bottom_text"
@@ -122,5 +110,49 @@
 
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/patient_hospital_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_patients_hospital_24dp" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/hospital_simple_loader"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_fileName="simple_loader.json" />
+
+    <ImageButton
+        android:id="@+id/patient_location_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_do_not_disturb_red_35dp" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/location_simple_loader"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@android:color/white"
+        app:lottie_fileName="simple_loader.json" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
