@@ -91,11 +91,13 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 patient_location_click = 1
                 Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT)
                     .show()
+                patient_location_btn.setBackgroundColor(Color.BLACK)
             } else {
                 patient_location_click = 0
                 Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT)
                     .show()
                 mapView.removePOIItems(patients_location_markers)
+                patient_location_btn.setBackgroundColor(Color.WHITE)
             }
         }
 
@@ -105,11 +107,13 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 patientHospitalMarker(mapView)
                 Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT)
                     .show()
+                patient_hospital_btn.setBackgroundColor(Color.BLACK)
             } else {
                 patient_hospital_click = 0
                 Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT)
                     .show()
                 mapView.removePOIItems(patients_hospital_markers)
+                patient_hospital_btn.setBackgroundColor(Color.WHITE)
             }
         }
         //mapView에 현재 확진자가 지나다녔던 곳을 마커로 찍어주는 메소드
