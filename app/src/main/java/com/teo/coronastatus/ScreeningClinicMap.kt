@@ -482,7 +482,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             override fun onResponse(call: Call, response: Response?) {
                 //응답이 있을 경우 call은 무조건 null이 아니므로 ?를 쓰지 않는다.
                 //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
-                //("not implemented") //To change body of created functions use File | Settings | File Templates.
 
                 val body = response?.body()?.string()
 //                Log.d(TAG, "Success to execute request! : $body")
@@ -570,6 +569,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         startActivity(intent)
     }
 
+    //액티비티가 Destroy될 경우 trackingMode를 끄고 현재 위치를 보여주는 마커를 삭제한다.
     override fun onDestroy() {
         super.onDestroy()
         mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
