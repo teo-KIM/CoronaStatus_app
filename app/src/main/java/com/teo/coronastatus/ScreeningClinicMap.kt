@@ -175,9 +175,11 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
         location_btn.setOnClickListener {
+            mapView.setMapCenterPoint(currentMapPoint, true);
             Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT)
                 .show()
         }
+
     }
 
     //MapView.CurrentLocationEventListener implement하기 위함
@@ -233,11 +235,14 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         currentMapPoint =
             MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+
         //이 좌표로 지도 중심 이동
-        mapView.setMapCenterPoint(currentMapPoint, true);
+//        mapView.setMapCenterPoint(currentMapPoint, true);
+
         //전역변수로 현재 좌표 저장
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
+
 //        Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
 
         //트래킹 모드가 아닌 단순 현재위치 업데이트일 경우, 한번만 위치 업데이트하고 트래킹을 중단시키기 위한 로직
