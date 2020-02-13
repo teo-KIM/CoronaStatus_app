@@ -77,6 +77,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         mapView = MapView(this@ScreeningClinicMap)
         val mapViewContainer = map_view as ViewGroup
         mapViewContainer.addView(mapView)
+        mapView.setZoomLevel(8, true);
 
         mapView.setCurrentLocationEventListener(this)
 
@@ -87,7 +88,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         }
 
         //디폴드 값이 모든 마커를 찍어주도록 변경한다
-        patientPlaceMarker(mapView)
+        patientHospitalMarker(mapView)
+        patient_hospital_click = 1
 
         patient_hospital_btn.visibility = View.GONE
         hospital_simple_loader.playAnimation()
@@ -96,7 +98,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             patient_hospital_btn.visibility = View.VISIBLE
         }, 1000)
 
-        patientHospitalMarker(mapView)
+        patientPlaceMarker(mapView)
+        patient_location_click = 1
 
         patient_location_btn.visibility = View.GONE
         location_simple_loader.playAnimation()
