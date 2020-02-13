@@ -56,5 +56,8 @@ dependencies {
     //Firebase Cloud Messaging 추가
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
 
+    //인 앱 업데이트를 위한 play store core 라이브러리추가
+    implementation 'com.google.android.play:core:1.6.1'
+
 }
 
