@@ -215,33 +215,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         //("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-
-    //위치 서비스가 비활성화 되어있을 경우 다이얼로그를 띄워서 활성화 할 수 있도록 하는 메소드
-    fun showDialogForLocationServiceSetting() {
-
-        val builder = AlertDialog.Builder(this@ScreeningClinicMap)
-
-        builder.setTitle("위치 서비스 비활성화");
-        builder.setMessage(
-            "앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
-                    + "위치 설정을 수정하시겠습니까?"
-        );
-        builder.setCancelable(true);
-
-        builder.setPositiveButton("설정") { dialog: DialogInterface?, which: Int ->
-            val callGPSSettingIntent =
-                Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE)
-        }
-
-        builder.setNegativeButton("취소") { dialog: DialogInterface?, which: Int ->
-            dialog?.cancel()
-        }
-
-        builder.create().show();
-    }
-
-
+    //현재 위치를 계속해서 업데이트 해주는 메소드
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 //        ("not implemented") //To change body of created functions use File | Settings | File Templates.
 
@@ -272,110 +246,6 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 //        }
     }
 
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
-
-            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
-            var check_result = true
-
-            // 모든 퍼미션을 허용했는지 체크한다.
-            for (result in grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    check_result = false
-                    break
-                }
-            }
-
-            if (check_result) {
-                Log.d(TAG, "onRequestPermissionsResult() 메소드 실행")
-                //위치 값을 가져올 수 있음
-                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving)
-            } else {
-                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료한다. 2 가지 경우가 있다.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        REQUIRED_PERMISSIONS[0]
-                    )
-                ) {
-
-                    Toast.makeText(
-                        this@ScreeningClinicMap,
-                        "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    finish()
-
-                } else {
-
-                    Toast.makeText(
-                        this@ScreeningClinicMap,
-                        "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-    }
-
-    fun checkRunTimePermission() {
-        //런타임 퍼미션 처리
-        // 1. 위치 퍼미션 가지고 있는지 확인
-        val hasFineLocationPermission = ContextCompat.checkSelfPermission(
-            this@ScreeningClinicMap,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED) {
-            // 2. 이미 퍼미션을 가지고 있다면 위치 값을 가져올 수 있음
-            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving)
-
-        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요. 2가지 경우(3-1, 4-1)가 있다.
-
-            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this@ScreeningClinicMap,
-                    REQUIRED_PERMISSIONS[0]
-                )
-            ) {
-
-                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
-                Toast.makeText(
-                    this@ScreeningClinicMap,
-                    "이 앱을 실행하려면 위치 접근 권한이 필요합니다.",
-                    Toast.LENGTH_LONG
-                )
-                    .show()
-                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-                ActivityCompat.requestPermissions(
-                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
-                    PERMISSIONS_REQUEST_CODE
-                )
-
-            } else {
-                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
-                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-                ActivityCompat.requestPermissions(
-                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
-                    PERMISSIONS_REQUEST_CODE
-                )
-            }
-
-        }
-    }
-
-    //현재 위치 서비스가 켜져있는지 확인하는 메소드
-    fun checkLocationServicesStatus(): Boolean {
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-    }
 
     //--------------------------------마커 찍는 메소드 시작
 
@@ -540,6 +410,136 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         }, 1000)
 
+    }
+
+    //-----------------------------------위치 서비스 관련 메소드
+    //위치 서비스가 비활성화 되어있을 경우 다이얼로그를 띄워서 활성화 할 수 있도록 하는 메소드
+    fun showDialogForLocationServiceSetting() {
+
+        val builder = AlertDialog.Builder(this@ScreeningClinicMap)
+
+        builder.setTitle("위치 서비스 비활성화");
+        builder.setMessage(
+            "앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
+                    + "위치 설정을 수정하시겠습니까?"
+        );
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("설정") { dialog: DialogInterface?, which: Int ->
+            val callGPSSettingIntent =
+                Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE)
+        }
+
+        builder.setNegativeButton("취소") { dialog: DialogInterface?, which: Int ->
+            dialog?.cancel()
+        }
+
+        builder.create().show();
+    }
+
+    //현재 위치 서비스가 켜져있는지 확인하는 메소드
+    fun checkLocationServicesStatus(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    fun checkRunTimePermission() {
+        //런타임 퍼미션 처리
+        // 1. 위치 퍼미션 가지고 있는지 확인
+        val hasFineLocationPermission = ContextCompat.checkSelfPermission(
+            this@ScreeningClinicMap,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED) {
+            // 2. 이미 퍼미션을 가지고 있다면 위치 값을 가져올 수 있음
+            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving)
+
+        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요. 2가지 경우(3-1, 4-1)가 있다.
+
+            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this@ScreeningClinicMap,
+                    REQUIRED_PERMISSIONS[0]
+                )
+            ) {
+
+                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
+                Toast.makeText(
+                    this@ScreeningClinicMap,
+                    "이 앱을 실행하려면 위치 접근 권한이 필요합니다.",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(
+                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
+                    PERMISSIONS_REQUEST_CODE
+                )
+
+            } else {
+                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
+                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(
+                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
+                    PERMISSIONS_REQUEST_CODE
+                )
+            }
+
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
+
+            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
+            var check_result = true
+
+            // 모든 퍼미션을 허용했는지 체크한다.
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    check_result = false
+                    break
+                }
+            }
+
+            if (check_result) {
+                Log.d(TAG, "onRequestPermissionsResult() 메소드 실행")
+                //위치 값을 가져올 수 있음
+                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving)
+            } else {
+                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료한다. 2 가지 경우가 있다.
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        REQUIRED_PERMISSIONS[0]
+                    )
+                ) {
+
+                    Toast.makeText(
+                        this@ScreeningClinicMap,
+                        "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+
+                } else {
+
+                    Toast.makeText(
+                        this@ScreeningClinicMap,
+                        "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 
 
