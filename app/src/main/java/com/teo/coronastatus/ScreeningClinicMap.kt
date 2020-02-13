@@ -86,6 +86,26 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             checkRunTimePermission()
         }
 
+        //디폴드 값이 모든 마커를 찍어주도록 변경한다
+        patientPlaceMarker(mapView)
+
+        patient_hospital_btn.visibility = View.GONE
+        hospital_simple_loader.playAnimation()
+        Handler().postDelayed({
+            patient_hospital_btn.setBackgroundColor(Color.BLACK)
+            patient_hospital_btn.visibility = View.VISIBLE
+        }, 1000)
+
+        patientHospitalMarker(mapView)
+
+        patient_location_btn.visibility = View.GONE
+        location_simple_loader.playAnimation()
+        Handler().postDelayed({
+            patient_location_btn.setBackgroundColor(Color.BLACK)
+            patient_location_btn.visibility = View.VISIBLE
+        }, 1000)
+
+
         patient_location_btn.setOnClickListener {
 
             //확진자가 돌아다닌 위치를 나타내주도록 하는 아이콘 클릭시
