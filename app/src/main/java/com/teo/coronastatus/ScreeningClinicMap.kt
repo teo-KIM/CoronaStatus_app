@@ -47,8 +47,8 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
     //내 위치 정보를 가져오기 위한 permission 관련 변수
     //checkRunTimePermission() 에서 사용
-    val GPS_ENABLE_REQUEST_CODE = 201;
-    val PERMISSIONS_REQUEST_CODE = 100;
+    val GPS_ENABLE_REQUEST_CODE = 201
+    val PERMISSIONS_REQUEST_CODE = 100
     var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     //현재 위치(위도, 경도, 지도) 를 전역 변수로 저장 한 후 사용하기 위해 선언
