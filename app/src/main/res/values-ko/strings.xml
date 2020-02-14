@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">코로나 현황</string>
+    <string name="default_notification_channel_id">Notification</string>
+    <string name="default_notification_channel_name">CoronaChannel</string>
+</resources>
