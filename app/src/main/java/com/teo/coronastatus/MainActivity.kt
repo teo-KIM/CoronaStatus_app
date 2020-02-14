@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
@@ -17,54 +18,45 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.widget.Toast
 import android.widget.Toast.makeText
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import java.lang.Math.log
 
 
 private val TAG: String = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
 
-
-    //업데이트를 했는지 확인하기 위한 변수 설정
-    val REQUEST_CODE_UPDATE = 103;
+    val MY_REQUEST_CODE = 301
+    private lateinit var appUpdateManager: AppUpdateManager
 
     //back 버튼 누를 때 누른 시간을 담을 변수
     //onBackPressed() 메소드에서 사용
     var second_time = 0L
     var first_time = 0L
 
-    //AppUpdateManagerFactory를 통해 초기화
-    val appUpdateManager = AppUpdateManagerFactory.create(this)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        appUpdateManager?.let {
-            it.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
+        appUpdateManager = AppUpdateManagerFactory.create(this)
 
-                //해당 업데이트 타입을 적용할 수 있는지 체크 후 업데이트 진행
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                    // or AppUpdateType.FLEXIBLE
-                    // FLEXIBLE 타입은 업데이트 선택 가능, IMMEDIATE 타입은 업데이트 선택 불가능. 무조건 업데이트 해야 앱을 이용할 수 있다.
-
-                    appUpdateManager?.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        AppUpdateType.IMMEDIATE, // or AppUpdateType.FLEXIBLE
-                        this,
-                        REQUEST_CODE_UPDATE
-                    )
-                }
+        appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {   //  check for the type of update flow you want
+                requestUpdate(appUpdateInfo = null)
             }
         }
-        try{
+        try {
             val token = FirebaseInstanceId.getInstance().getToken()
 //            Log.d(TAG, "device token : " + token)
 
-        }catch (e:NullPointerException){
+        } catch (e: NullPointerException) {
             e.printStackTrace()
         }
         val now = System.currentTimeMillis()
@@ -103,6 +95,54 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    companion object {
+        private const val REQUEST_CODE_FLEXI_UPDATE = 173
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_FLEXI_UPDATE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> { //  handle user's approval
+
+                }
+                Activity.RESULT_CANCELED -> { //  handle user's rejection
+                    Log.d(TAG, "Update flow canceled! Result code: $resultCode ")
+
+                }
+                ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {  //  handle update failure
+                    Log.d(TAG, "Update flow failed! Result code: $resultCode ")
+                    requestUpdate(appUpdateInfo = null)
+                }
+
+            }
+        }
+    }
+
+
+    private fun requestUpdate(appUpdateInfo: AppUpdateInfo?) {
+        appUpdateManager.startUpdateFlowForResult(
+            appUpdateInfo,
+            AppUpdateType.IMMEDIATE, //  HERE specify the type of update flow you want
+            this,   //  the instance of an activity
+            REQUEST_CODE_FLEXI_UPDATE
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                appUpdateManager.startUpdateFlowForResult(
+                    it,
+                    AppUpdateType.IMMEDIATE,
+                    this,
+                    REQUEST_CODE_FLEXI_UPDATE
+                )
+            }
+        }
+    }
+
     fun fetchJson() {
 
         val url = URL("https://www.portfoliobyteo.kro.kr/getjson.php")
@@ -134,8 +174,8 @@ class MainActivity : AppCompatActivity() {
                     val today = obj.getInt("today")
                     //today = db에 저장된 오늘 최종 인원수
 
-                    until_yesterday_array[i]=until_yesterday
-                    today_array[i]=today
+                    until_yesterday_array[i] = until_yesterday
+                    today_array[i] = today
 
 //                    Log.d(TAG, "today_array[$i] : "+ today_array[i])
 //                    Log.d(TAG, "classification($i) : $classification")
@@ -158,46 +198,19 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-            Handler().postDelayed({
-                for (i in 0 until today_array.size) {
-                    when (i) {
-                        0 -> definite.setText(today_array[i].toString())
-                        1 -> death.setText(today_array[i].toString())
-                        2 -> recovery.setText(today_array[i].toString())
-                        3 -> isolated.setText(today_array[i].toString())
-                        4 -> released.setText(today_array[i].toString())
-                        5 -> symptom.setText(today_array[i].toString())
-                    }
-                }
-            }, 400)
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        appUpdateManager.appUpdateInfo
-            .addOnSuccessListener {
-                if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                    //인 앱 업데이트가 이미 진행중일 경우 업데이트를 계속 진행합니다.
-                    appUpdateManager.startUpdateFlowForResult(
-                        it,
-                        AppUpdateType.IMMEDIATE,
-                        this@MainActivity,
-                        REQUEST_CODE_UPDATE)
+        Handler().postDelayed({
+            for (i in 0 until today_array.size) {
+                when (i) {
+                    0 -> definite.setText(today_array[i].toString())
+                    1 -> death.setText(today_array[i].toString())
+                    2 -> recovery.setText(today_array[i].toString())
+                    3 -> isolated.setText(today_array[i].toString())
+                    4 -> released.setText(today_array[i].toString())
+                    5 -> symptom.setText(today_array[i].toString())
                 }
             }
-    }
+        }, 400)
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        //업데이트를 취소할 경우
-        if (requestCode == REQUEST_CODE_UPDATE) {
-            if (resultCode != Activity.RESULT_OK) {
-                Toast.makeText(this@MainActivity, "업데이트가 취소 되었습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onBackPressed() {
@@ -214,7 +227,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-
 
 
 //data class 생성 후 전체 json 데이터를 한번에 파싱 하려고 했으나 데이터를 가져올 때 바로 파싱하는 것으로 로직 변경
