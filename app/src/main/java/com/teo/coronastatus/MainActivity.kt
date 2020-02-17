@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appUpdateManager: AppUpdateManager
 
     //back 버튼 누를 때 누른 시간을 담을 변수
-    //onBackPressed() 메소드에서 사용
+    //onBackPressed() 에서 사용
     var second_time = 0L
     var first_time = 0L
 
@@ -52,22 +52,24 @@ class MainActivity : AppCompatActivity() {
                 requestUpdate(appUpdateInfo = null)
             }
         }
+
+
         try {
+            //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
+            //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
             val token = FirebaseInstanceId.getInstance().getToken()
 //            Log.d(TAG, "device token : " + token)
-
         } catch (e: NullPointerException) {
             e.printStackTrace()
         }
-        val now = System.currentTimeMillis()
-        val date = Date(now)
-        val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        val formatDate = dateNow.format(date)
-        now_tv.setText(formatDate)
 
+        //새로고침 버튼을 누를 경우 마지막 업데이트(새로고침) 시간을 알려준다.
+        setLastUpdateTime()
+
+        //DB에서 현재 국내 코로나 현황을 가져오는 메소드
         fetchJson()
 
-        //현재 MainActivity에 있다는 것을 알려주기 위함
+        //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
         board_btn.setImageResource(R.drawable.board_click)
         board_tv.setTextColor(Color.parseColor("#0d64b2"))
 
@@ -84,15 +86,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         refresh_lottie.setOnClickListener {
+            //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
             fetchJson()
             refresh_lottie.playAnimation()
-            val now = System.currentTimeMillis()
-            val date = Date(now)
-            val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-            val formatDate = dateNow.format(date)
-            now_tv.setText(formatDate)
+            setLastUpdateTime()
         }
+    }
 
+    fun setLastUpdateTime(){
+        second_time = System.currentTimeMillis()
+        val date = Date(second_time)
+        val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val formatDate = dateNow.format(date)
+        now_tv.setText(formatDate)
     }
 
     companion object {
