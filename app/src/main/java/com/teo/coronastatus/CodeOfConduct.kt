@@ -51,7 +51,7 @@ class CodeOfConduct : AppCompatActivity() {
 
     fun getUrl(myWebView: WebView) {
 
-        val url = URL("https://www.portfoliobyteo.kro.kr/getUrl.php")
+        val url = URL(getString(R.string.url))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 

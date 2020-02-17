@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
 
     fun fetchJson() {
 
-        val url = URL("https://www.portfoliobyteo.kro.kr/getjson.php")
+        val url = URL(getString(R.string.status))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 
