@@ -62,7 +62,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-
+        //API 26, 즉 Oreo 이상의 버전에서는 Notification Channel을 설정해주지 않으면 알림 바가 실행되지 않음
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelName = getString(R.string.default_notification_channel_name)
             val channel =
