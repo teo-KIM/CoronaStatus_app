@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        //TODO toast.cancel()이 있는데도 불구하고 토스트 메세지가 바로 없어지지 않음. 수정 요망
+        //toast.cancel()이 있는데도 불구하고 토스트 메세지가 바로 없어지지 않음. 수정 요망
         second_time = System.currentTimeMillis()
         val toast = makeText(this@MainActivity, "한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
         toast.show()
