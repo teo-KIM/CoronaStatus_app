@@ -45,12 +45,10 @@ class MainActivity : AppCompatActivity() {
     var first_time = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate")
-        Log.d(TAG, "onCreate에서 function을 가지고 있는지 : " + intent.hasExtra("function"))
+//        Log.d(TAG, "onCreate")
+//        Log.d(TAG, "onCreate에서 function을 가지고 있는지 : " + intent.hasExtra("function"))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -66,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
             //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
             val token = FirebaseInstanceId.getInstance().token
-            Log.d(TAG, "device token : " + token)
+//            Log.d(TAG, "device token : " + token)
         } catch (e: NullPointerException) {
             e.printStackTrace()
         }
@@ -100,13 +98,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //새로고침 버튼을 누를 경우 마지막 업데이트(새로고침) 시간을 알려준다.
-        setLastUpdateTime()
-
         //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
         board_btn.setImageResource(R.drawable.board_click)
         board_tv.setTextColor(Color.parseColor("#0321C6"))
-
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java)
@@ -124,11 +118,11 @@ class MainActivity : AppCompatActivity() {
         refresh_lottie.setOnClickListener {
             //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
             fetchJson()
-
         }
     }
 
     fun setLastUpdateTime() {
+        //새로고침 버튼을 누를 경우 마지막 업데이트(새로고침) 시간을 알려준다.
         second_time = System.currentTimeMillis()
         val date = Date(second_time)
         val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
@@ -171,8 +165,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        Log.d(TAG, "onResume")
+//        Log.d(TAG, "onResume")
         super.onResume()
+
+        //DB에서 현재 국내 코로나 현황을 가져오는 메소드
+        //onCreate가 아닌 onResume인 이유는 1회만 실행하는 게 아닌 다른 액티비티로부터 넘어왔을때도 자동으로 새로고침을 해주기 위해서
+        fetchJson()
+
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 appUpdateManager.startUpdateFlowForResult(
@@ -183,10 +182,6 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
-
-        //DB에서 현재 국내 코로나 현황을 가져오는 메소드
-        //onCreate가 아닌 onResume인 이유는 1회만 실행하는 게 아닌 다른 액티비티로부터 넘어왔을때도 자동으로 새로고침을 해주기 위해서
-        fetchJson()
 
     }
 
@@ -212,7 +207,6 @@ class MainActivity : AppCompatActivity() {
         val url = URL(getString(R.string.status))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
-
 
         //db에서 가져올 데이터를 담을 배열
         var until_yesterday_array = Array(6, { 0 })
@@ -259,7 +253,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call?, e: IOException?) {
                 //("not implemented") //To change body of created functions use File | Settings | File Templates.
-                println("Failed to execute request!")
+                println("Failed to get status Data from MainActivity")
             }
         })
 
