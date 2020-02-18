@@ -19,7 +19,7 @@ import android.os.Build
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     //firebase에서 메시지를 받으면 디바이스에 알람이 뜨게 하는 class
-    private val TAG: String = MainActivity::class.java.simpleName
+    private val TAG: String = MyFirebaseMessagingService::class.java.simpleName
 
     override fun onNewToken(token: String) {
 //        Log.d("New_Token", token)
