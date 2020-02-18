@@ -71,6 +71,35 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
+        //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
+        //onCreate에 넣은 이뉴는 onResume, onStart의 경우 onDestroy 이전에 1회 이상 불러질 가능성이 있기 때문.
+        //-> 1회 이상 불러지는 경우 불러질 때 마다 다이얼로그가 뜨게 된다.
+        if (intent.hasExtra("function")) {
+            val function: String? = intent.getStringExtra("function")
+
+//            Log.d(TAG, "title : " + intent.getStringExtra("title"))
+//            Log.d(TAG, "body : " + intent.getStringExtra("body"))
+            when (function) {
+                //알람을 눌러서 들어온 경우
+                "notification" -> {
+//                    Log.d(TAG, "function : " + intent.getStringExtra("function"))
+                    val builder = AlertDialog.Builder(this@MainActivity)
+
+                    //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
+                    builder.setMessage(intent.getStringExtra("body"))!!
+                        //확인 이외에 다른 선택지는 필요 없기 때문에 positiveButton만 사용함. 확인 버튼 누를 경우 다이얼로그 없어지도록 함
+                        .setPositiveButton("확인", { dialog, id -> dialog.cancel() })
+
+                    val alert = builder.create()
+                    alert.setTitle(intent.getStringExtra("title"))
+                    alert.show()
+                }
+                else -> {
+                    //다른 기능이 추가되면 필요함
+                }
+            }
+        }
+
         //새로고침 버튼을 누를 경우 마지막 업데이트(새로고침) 시간을 알려준다.
         setLastUpdateTime()
 
@@ -156,37 +185,6 @@ class MainActivity : AppCompatActivity() {
                     this,
                     REQUEST_CODE_FLEXI_UPDATE
                 )
-            }
-        }
-        //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
-        Log.d(TAG, "onResume에서 function을 가지고 있는지 : " + intent.hasExtra("function"))
-
-        if (intent.hasExtra("function")) {
-            val function: String? = intent.getStringExtra("function")
-
-            Log.d(TAG, "title : " + intent.getStringExtra("title"))
-            Log.d(TAG, "body : " + intent.getStringExtra("body"))
-            when (function) {
-                //알람을 눌러서 들어온 경우
-                "notification" -> {
-                    Log.d(TAG, "function : " + intent.getStringExtra("function"))
-
-                    val builder = AlertDialog.Builder(this@MainActivity)
-
-                    //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
-                    builder.setMessage(intent.getStringExtra("body"))!!
-                        .setPositiveButton("확인", { dialog, id -> dialog.cancel() })
-
-                    val alert = builder.create()
-
-                    alert.setTitle(intent.getStringExtra("title"))
-
-                    alert.show()
-
-                }
-                else -> {
-                    //다른 기능이 추가되면 필요함
-                }
             }
         }
 
