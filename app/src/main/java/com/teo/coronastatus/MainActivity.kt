@@ -103,9 +103,6 @@ class MainActivity : AppCompatActivity() {
         //새로고침 버튼을 누를 경우 마지막 업데이트(새로고침) 시간을 알려준다.
         setLastUpdateTime()
 
-        //DB에서 현재 국내 코로나 현황을 가져오는 메소드
-        fetchJson()
-
         //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
         board_btn.setImageResource(R.drawable.board_click)
         board_tv.setTextColor(Color.parseColor("#0321C6"))
@@ -127,8 +124,7 @@ class MainActivity : AppCompatActivity() {
         refresh_lottie.setOnClickListener {
             //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
             fetchJson()
-            refresh_lottie.playAnimation()
-            setLastUpdateTime()
+
         }
     }
 
@@ -188,19 +184,35 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //DB에서 현재 국내 코로나 현황을 가져오는 메소드
+        //onCreate가 아닌 onResume인 이유는 1회만 실행하는 게 아닌 다른 액티비티로부터 넘어왔을때도 자동으로 새로고침을 해주기 위해서
+        fetchJson()
+
     }
 
     fun fetchJson() {
+        //코로나 바이러스 국내 현황을 업데이트 해주는 메소드
+        //새로고침 로띠를 실행해주고 데이터를 불러오는 1초동안 현황을 나타내주는 숫자(TextView) 대신 로딩 로띠를 띄워준다. -> Visibility로 관리한다.
+        refresh_lottie.playAnimation()
+
+        definite.visibility = View.GONE
+        recovery.visibility = View.GONE
+        death.visibility = View.GONE
+        isolated.visibility = View.GONE
+
+        loader_red.visibility = View.VISIBLE
+        loader_red.playAnimation()
+        loader_green.visibility = View.VISIBLE
+        loader_green.playAnimation()
+        loader_black.visibility = View.VISIBLE
+        loader_black.playAnimation()
+        loader_yellow.visibility = View.VISIBLE
+        loader_yellow.playAnimation()
 
         val url = URL(getString(R.string.status))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
-        definite.visibility = View.GONE
-        recovery.visibility = View.GONE
-        loader_red.visibility = View.VISIBLE
-        loader_green.visibility = View.VISIBLE
-        loader_red.playAnimation()
-        loader_green.playAnimation()
+
 
         //db에서 가져올 데이터를 담을 배열
         var until_yesterday_array = Array(6, { 0 })
@@ -262,10 +274,19 @@ class MainActivity : AppCompatActivity() {
                     5 -> symptom.text = today_array[i].toString()
                 }
             }
+
             loader_red.visibility = View.GONE
             loader_green.visibility = View.GONE
+            loader_black.visibility = View.GONE
+            loader_yellow.visibility = View.GONE
+
             definite.visibility = View.VISIBLE
             recovery.visibility = View.VISIBLE
+            death.visibility = View.VISIBLE
+            isolated.visibility = View.VISIBLE
+
+            setLastUpdateTime()
+
         }, 1000)
 
     }
