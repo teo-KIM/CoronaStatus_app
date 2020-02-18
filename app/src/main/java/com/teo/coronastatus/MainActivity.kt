@@ -46,9 +46,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
-        Log.d(TAG, "onCreate에서 function을 가지고 있는지 : "+intent.hasExtra("function"))
+        Log.d(TAG, "onCreate에서 function을 가지고 있는지 : " + intent.hasExtra("function"))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -65,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
             val token = FirebaseInstanceId.getInstance().token
             Log.d(TAG, "device token : " + token)
-        } catch (e : NullPointerException) {
+        } catch (e: NullPointerException) {
             e.printStackTrace()
         }
 
@@ -78,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
         board_btn.setImageResource(R.drawable.board_click)
         board_tv.setTextColor(Color.parseColor("#0321C6"))
+
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java)
@@ -156,42 +159,37 @@ class MainActivity : AppCompatActivity() {
             }
         }
         //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
-        Log.d(TAG, "onResume에서 function을 가지고 있는지 : "+intent.hasExtra("function"))
+        Log.d(TAG, "onResume에서 function을 가지고 있는지 : " + intent.hasExtra("function"))
+
         if (intent.hasExtra("function")) {
             val function: String? = intent.getStringExtra("function")
 
-            Log.d(TAG, "title : " +intent.getStringExtra("title"))
-            Log.d(TAG, "body : " +intent.getStringExtra("body"))
+            Log.d(TAG, "title : " + intent.getStringExtra("title"))
+            Log.d(TAG, "body : " + intent.getStringExtra("body"))
             when (function) {
                 //알람을 눌러서 들어온 경우
                 "notification" -> {
-                    Log.d(TAG, "function : "+intent.getStringExtra("function"))
-                    val alertDialog: AlertDialog? = this@MainActivity?.let {
-                        val builder = AlertDialog.Builder(it)
+                    Log.d(TAG, "function : " + intent.getStringExtra("function"))
 
-                        //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
-                        builder.setMessage(intent.getStringExtra("body"))!!.setTitle(
-                            intent.getStringExtra(
-                                "title"
-                            )
-                        )
+                    val builder = AlertDialog.Builder(this@MainActivity)
 
-                        //예 아니요가 아닌 정보 전달을 위한 다이얼로그이기 때문에 확인 버튼 하나만 추가한다.
-                        builder.apply {
-                            setPositiveButton("확인",
-                                DialogInterface.OnClickListener { dialog, id ->
-                                    // User clicked OK button
-                                })
-                        }
+                    //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
+                    builder.setMessage(intent.getStringExtra("body"))!!
+                        .setPositiveButton("확인", { dialog, id -> dialog.cancel() })
 
-                        builder.create()
-                    }
+                    val alert = builder.create()
+
+                    alert.setTitle(intent.getStringExtra("title"))
+
+                    alert.show()
+
                 }
                 else -> {
                     //다른 기능이 추가되면 필요함
                 }
             }
         }
+
     }
 
     fun fetchJson() {
