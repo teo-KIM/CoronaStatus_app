@@ -1,6 +1,8 @@
 package com.teo.coronastatus
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +26,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import java.io.Serializable
 import java.lang.Math.log
 
 
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         try {
             //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
             //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
-            val token = FirebaseInstanceId.getInstance().getToken()
+            val token = FirebaseInstanceId.getInstance().token
 //            Log.d(TAG, "device token : " + token)
         } catch (e: NullPointerException) {
             e.printStackTrace()
@@ -74,13 +77,13 @@ class MainActivity : AppCompatActivity() {
         board_tv.setTextColor(Color.parseColor("#0d64b2"))
 
         map_btn.setOnClickListener {
-            val intent = Intent(this, ScreeningClinicMap::class.java);
+            val intent = Intent(this, ScreeningClinicMap::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
         diagnose_btn.setOnClickListener {
-            val intent = Intent(this, CodeOfConduct::class.java);
+            val intent = Intent(this, CodeOfConduct::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
@@ -93,12 +96,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setLastUpdateTime(){
+    fun setLastUpdateTime() {
         second_time = System.currentTimeMillis()
         val date = Date(second_time)
         val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         val formatDate = dateNow.format(date)
-        now_tv.setText(formatDate)
+        now_tv.text = formatDate
     }
 
     companion object {
@@ -148,7 +151,37 @@ class MainActivity : AppCompatActivity() {
             }
         }
         //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
+        val function: String? = intent.getStringExtra("function")
+        if (function != null) {
+            when (function) {
+                //알람을 눌러서 들어온 경우
+                "notification" -> {
+                    val alertDialog: AlertDialog? = this@MainActivity?.let {
+                        val builder = AlertDialog.Builder(it)
 
+                        //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
+                        builder.setMessage(intent.getStringExtra("body"))!!.setTitle(
+                            intent.getStringExtra(
+                                "title"
+                            )
+                        )
+
+                        //예 아니요가 아닌 정보 전달을 위한 다이얼로그이기 때문에 확인 버튼 하나만 추가한다.
+                        builder.apply {
+                            setPositiveButton("확인",
+                                DialogInterface.OnClickListener { dialog, id ->
+                                    // User clicked OK button
+                                })
+                        }
+
+                        builder.create()
+                    }
+                }
+                else -> {
+                    //다른 기능이 추가되면 필요함
+                }
+            }
+        }
     }
 
     fun fetchJson() {
@@ -209,12 +242,12 @@ class MainActivity : AppCompatActivity() {
         Handler().postDelayed({
             for (i in 0 until today_array.size) {
                 when (i) {
-                    0 -> definite.setText(today_array[i].toString())
-                    1 -> death.setText(today_array[i].toString())
-                    2 -> recovery.setText(today_array[i].toString())
-                    3 -> isolated.setText(today_array[i].toString())
-                    4 -> released.setText(today_array[i].toString())
-                    5 -> symptom.setText(today_array[i].toString())
+                    0 -> definite.text = today_array[i].toString()
+                    1 -> death.text = today_array[i].toString()
+                    2 -> recovery.text = today_array[i].toString()
+                    3 -> isolated.text = today_array[i].toString()
+                    4 -> released.text = today_array[i].toString()
+                    5 -> symptom.text = today_array[i].toString()
                 }
             }
         }, 400)
