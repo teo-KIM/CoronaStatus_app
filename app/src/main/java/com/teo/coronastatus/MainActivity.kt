@@ -5,10 +5,12 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
@@ -43,6 +45,8 @@ class MainActivity : AppCompatActivity() {
     var first_time = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate")
+        Log.d(TAG, "onCreate에서 function을 가지고 있는지 : "+intent.hasExtra("function"))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -56,13 +60,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         try {
             //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
             //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
             val token = FirebaseInstanceId.getInstance().token
-//            Log.d(TAG, "device token : " + token)
-        } catch (e: NullPointerException) {
+            Log.d(TAG, "device token : " + token)
+        } catch (e : NullPointerException) {
             e.printStackTrace()
         }
 
@@ -74,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
         board_btn.setImageResource(R.drawable.board_click)
-        board_tv.setTextColor(Color.parseColor("#0d64b2"))
+        board_tv.setTextColor(Color.parseColor("#0321C6"))
 
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java)
@@ -87,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
+
 
         refresh_lottie.setOnClickListener {
             //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
@@ -139,6 +143,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        Log.d(TAG, "onResume")
         super.onResume()
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
@@ -151,11 +156,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
-        val function: String? = intent.getStringExtra("function")
-        if (function != null) {
+        Log.d(TAG, "onResume에서 function을 가지고 있는지 : "+intent.hasExtra("function"))
+        if (intent.hasExtra("function")) {
+            val function: String? = intent.getStringExtra("function")
+
+            Log.d(TAG, "title : " +intent.getStringExtra("title"))
+            Log.d(TAG, "body : " +intent.getStringExtra("body"))
             when (function) {
                 //알람을 눌러서 들어온 경우
                 "notification" -> {
+                    Log.d(TAG, "function : "+intent.getStringExtra("function"))
                     val alertDialog: AlertDialog? = this@MainActivity?.let {
                         val builder = AlertDialog.Builder(it)
 
@@ -189,6 +199,12 @@ class MainActivity : AppCompatActivity() {
         val url = URL(getString(R.string.status))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
+        definite.visibility = View.GONE
+        recovery.visibility = View.GONE
+        loader_red.visibility = View.VISIBLE
+        loader_green.visibility = View.VISIBLE
+        loader_red.playAnimation()
+        loader_green.playAnimation()
 
         //db에서 가져올 데이터를 담을 배열
         var until_yesterday_array = Array(6, { 0 })
@@ -250,7 +266,11 @@ class MainActivity : AppCompatActivity() {
                     5 -> symptom.text = today_array[i].toString()
                 }
             }
-        }, 400)
+            loader_red.visibility = View.GONE
+            loader_green.visibility = View.GONE
+            definite.visibility = View.VISIBLE
+            recovery.visibility = View.VISIBLE
+        }, 1000)
 
     }
 

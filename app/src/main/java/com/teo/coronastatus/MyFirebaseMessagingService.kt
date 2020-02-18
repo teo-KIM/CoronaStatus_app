@@ -43,12 +43,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
         intent.putExtra("function", "notification")
         intent.putExtra("title", remoteMessage.notification?.title)
         intent.putExtra("body", remoteMessage.notification?.body)
 
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this@MyFirebaseMessagingService, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
         val channelId : String = getString(R.string.default_notification_channel_id)
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

@@ -71,7 +71,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         //현재 ScreeningClinicMap에 있다는 것을 알려주기 위함
         map_btn.setImageResource(R.drawable.ic_map_click)
-        map_tv.setTextColor(Color.parseColor("#0d64b2"))
+        map_tv.setTextColor(Color.parseColor("#0321C6"))
 
         //화면에 맵뷰를 보여준다
         mapView = MapView(this@ScreeningClinicMap)
