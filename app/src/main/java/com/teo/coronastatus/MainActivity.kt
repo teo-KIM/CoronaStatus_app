@@ -147,6 +147,8 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+        //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
+
     }
 
     fun fetchJson() {
