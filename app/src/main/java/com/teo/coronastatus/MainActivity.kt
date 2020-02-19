@@ -209,8 +209,8 @@ class MainActivity : AppCompatActivity() {
         val client = OkHttpClient()
 
         //db에서 가져올 데이터를 담을 배열
-        var until_yesterday_array = Array(6, { 0 })
-        var today_array = Array(6, { 0 })
+        var until_yesterday_array = Array(6, { "" })
+        var today_array = Array(6, { "" })
 
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response?) {
@@ -227,10 +227,10 @@ class MainActivity : AppCompatActivity() {
                 for (i in 0 until jArray.length()) {
                     val obj = jArray.getJSONObject(i)
 
-                    val until_yesterday = obj.getInt("until_yesterday")
+                    val until_yesterday = obj.getString("until_yesterday")
                     //until_yesterday = db에 저장된 여태까지의 누계 인원수
 
-                    val today = obj.getInt("today")
+                    val today = obj.getString("today")
                     //today = db에 저장된 오늘 최종 인원수
 
                     until_yesterday_array[i] = until_yesterday
