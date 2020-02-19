@@ -2,4 +2,9 @@
     <string name="app_name">CoronaStatus</string>
     <string name="default_notification_channel_id">Notification</string>
     <string name="default_notification_channel_name" translatable="true">CoronaChannel</string>
+    <string name="infected_location" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/infectedLocation</string>
+    <string name="infected_hospital" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/patientHospital</string>
+    <string name="status" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/status</string>
+    <string name="url" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/url</string>
+
 </resources>

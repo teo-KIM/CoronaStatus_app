@@ -21,7 +21,7 @@ class CodeOfConduct : AppCompatActivity() {
 
         //현재 CodeOfConduct에 있다는 것을 알려주기 위함
         diagnose_btn.setImageResource(R.drawable.doctor_click)
-        diagnose_tv.setTextColor(Color.parseColor("#0d64b2"))
+        diagnose_tv.setTextColor(Color.parseColor("#0321C6"))
 
         val myWebView = web_view as WebView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -51,7 +51,7 @@ class CodeOfConduct : AppCompatActivity() {
 
     fun getUrl(myWebView: WebView) {
 
-        val url = URL("https://www.portfoliobyteo.kro.kr/getUrl.php")
+        val url = URL(getString(R.string.url))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 

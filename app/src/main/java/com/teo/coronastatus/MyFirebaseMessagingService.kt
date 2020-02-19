@@ -19,7 +19,7 @@ import android.os.Build
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     //firebase에서 메시지를 받으면 디바이스에 알람이 뜨게 하는 class
-    private val TAG: String = MainActivity::class.java.simpleName
+    private val TAG: String = MyFirebaseMessagingService::class.java.simpleName
 
     override fun onNewToken(token: String) {
 //        Log.d("New_Token", token)
@@ -43,8 +43,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra("function", "notification")
+        intent.putExtra("title", remoteMessage.notification?.title)
+        intent.putExtra("body", remoteMessage.notification?.body)
 
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this@MyFirebaseMessagingService, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
         val channelId : String = getString(R.string.default_notification_channel_id)
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -62,7 +65,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-
+        //API 26, 즉 Oreo 이상의 버전에서는 Notification Channel을 설정해주지 않으면 알림 바가 실행되지 않음
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelName = getString(R.string.default_notification_channel_name)
             val channel =

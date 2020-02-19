@@ -1,12 +1,16 @@
 package com.teo.coronastatus
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
@@ -24,6 +28,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import java.io.Serializable
 import java.lang.Math.log
 
 
@@ -35,13 +40,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appUpdateManager: AppUpdateManager
 
     //back 버튼 누를 때 누른 시간을 담을 변수
-    //onBackPressed() 메소드에서 사용
+    //onBackPressed() 에서 사용
     var second_time = 0L
     var first_time = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate")
+        Log.d(TAG, "onCreate에서 function을 가지고 있는지 : " + intent.hasExtra("function"))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -52,47 +61,83 @@ class MainActivity : AppCompatActivity() {
                 requestUpdate(appUpdateInfo = null)
             }
         }
-        try {
-            val token = FirebaseInstanceId.getInstance().getToken()
-//            Log.d(TAG, "device token : " + token)
 
+        try {
+            //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
+            //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
+            val token = FirebaseInstanceId.getInstance().token
+            Log.d(TAG, "device token : " + token)
         } catch (e: NullPointerException) {
             e.printStackTrace()
         }
-        val now = System.currentTimeMillis()
-        val date = Date(now)
-        val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        val formatDate = dateNow.format(date)
-        now_tv.setText(formatDate)
 
+        //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
+        //onCreate에 넣은 이뉴는 onResume, onStart의 경우 onDestroy 이전에 1회 이상 불러질 가능성이 있기 때문.
+        //-> 1회 이상 불러지는 경우 불러질 때 마다 다이얼로그가 뜨게 된다.
+        if (intent.hasExtra("function")) {
+            val function: String? = intent.getStringExtra("function")
+
+//            Log.d(TAG, "title : " + intent.getStringExtra("title"))
+//            Log.d(TAG, "body : " + intent.getStringExtra("body"))
+            when (function) {
+                //알람을 눌러서 들어온 경우
+                "notification" -> {
+//                    Log.d(TAG, "function : " + intent.getStringExtra("function"))
+                    val builder = AlertDialog.Builder(this@MainActivity)
+
+                    //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
+                    builder.setMessage(intent.getStringExtra("body"))!!
+                        //확인 이외에 다른 선택지는 필요 없기 때문에 positiveButton만 사용함. 확인 버튼 누를 경우 다이얼로그 없어지도록 함
+                        .setPositiveButton("확인", { dialog, id -> dialog.cancel() })
+
+                    val alert = builder.create()
+                    alert.setTitle(intent.getStringExtra("title"))
+                    alert.show()
+                }
+                else -> {
+                    //다른 기능이 추가되면 필요함
+                }
+            }
+        }
+
+        //새로고침 버튼을 누를 경우 마지막 업데이트(새로고침) 시간을 알려준다.
+        setLastUpdateTime()
+
+        //DB에서 현재 국내 코로나 현황을 가져오는 메소드
         fetchJson()
 
-        //현재 MainActivity에 있다는 것을 알려주기 위함
+        //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
         board_btn.setImageResource(R.drawable.board_click)
-        board_tv.setTextColor(Color.parseColor("#0d64b2"))
+        board_tv.setTextColor(Color.parseColor("#0321C6"))
+
 
         map_btn.setOnClickListener {
-            val intent = Intent(this, ScreeningClinicMap::class.java);
+            val intent = Intent(this, ScreeningClinicMap::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
         diagnose_btn.setOnClickListener {
-            val intent = Intent(this, CodeOfConduct::class.java);
+            val intent = Intent(this, CodeOfConduct::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
+
         refresh_lottie.setOnClickListener {
+            //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
             fetchJson()
             refresh_lottie.playAnimation()
-            val now = System.currentTimeMillis()
-            val date = Date(now)
-            val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-            val formatDate = dateNow.format(date)
-            now_tv.setText(formatDate)
+            setLastUpdateTime()
         }
+    }
 
+    fun setLastUpdateTime() {
+        second_time = System.currentTimeMillis()
+        val date = Date(second_time)
+        val dateNow = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val formatDate = dateNow.format(date)
+        now_tv.text = formatDate
     }
 
     companion object {
@@ -130,6 +175,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        Log.d(TAG, "onResume")
         super.onResume()
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
@@ -141,13 +187,20 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+
     }
 
     fun fetchJson() {
 
-        val url = URL("https://www.portfoliobyteo.kro.kr/getjson.php")
+        val url = URL(getString(R.string.status))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
+        definite.visibility = View.GONE
+        recovery.visibility = View.GONE
+        loader_red.visibility = View.VISIBLE
+        loader_green.visibility = View.VISIBLE
+        loader_red.playAnimation()
+        loader_green.playAnimation()
 
         //db에서 가져올 데이터를 담을 배열
         var until_yesterday_array = Array(6, { 0 })
@@ -201,20 +254,24 @@ class MainActivity : AppCompatActivity() {
         Handler().postDelayed({
             for (i in 0 until today_array.size) {
                 when (i) {
-                    0 -> definite.setText(today_array[i].toString())
-                    1 -> death.setText(today_array[i].toString())
-                    2 -> recovery.setText(today_array[i].toString())
-                    3 -> isolated.setText(today_array[i].toString())
-                    4 -> released.setText(today_array[i].toString())
-                    5 -> symptom.setText(today_array[i].toString())
+                    0 -> definite.text = today_array[i].toString()
+                    1 -> death.text = today_array[i].toString()
+                    2 -> recovery.text = today_array[i].toString()
+                    3 -> isolated.text = today_array[i].toString()
+                    4 -> released.text = today_array[i].toString()
+                    5 -> symptom.text = today_array[i].toString()
                 }
             }
-        }, 400)
+            loader_red.visibility = View.GONE
+            loader_green.visibility = View.GONE
+            definite.visibility = View.VISIBLE
+            recovery.visibility = View.VISIBLE
+        }, 1000)
 
     }
 
     override fun onBackPressed() {
-        //TODO toast.cancel()이 있는데도 불구하고 토스트 메세지가 바로 없어지지 않음. 수정 요망
+        //toast.cancel()이 있는데도 불구하고 토스트 메세지가 바로 없어지지 않음. 수정 요망
         second_time = System.currentTimeMillis()
         val toast = makeText(this@MainActivity, "한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
         toast.show()

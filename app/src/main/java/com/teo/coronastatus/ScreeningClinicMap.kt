@@ -71,7 +71,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
         //현재 ScreeningClinicMap에 있다는 것을 알려주기 위함
         map_btn.setImageResource(R.drawable.ic_map_click)
-        map_tv.setTextColor(Color.parseColor("#0d64b2"))
+        map_tv.setTextColor(Color.parseColor("#0321C6"))
 
         //화면에 맵뷰를 보여준다
         mapView = MapView(this@ScreeningClinicMap)
@@ -256,7 +256,9 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
     //확진자가 입원중인 병원에 마커를 찍어주는 메소드
     fun patientHospitalMarker(mapView: MapView) {
-        val url = URL("https://www.portfoliobyteo.kro.kr/getPatientHospital.php")
+
+
+        val url = URL(getString(R.string.infected_hospital))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 
@@ -344,7 +346,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     //확진자가 있었던 곳에 핀을 찍어주는 메소드
     fun patientPlaceMarker(mapView: MapView) {
 
-        val url = URL("https://www.portfoliobyteo.kro.kr/getInfectedLocation.php")
+        val url = URL(getString(R.string.infected_location))
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 

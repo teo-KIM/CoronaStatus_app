@@ -1,5 +1,5 @@
 package com.teo.coronastatus
 
-class singleton {
+class Singleton(){
 
 }
