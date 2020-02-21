@@ -37,7 +37,7 @@ class NotificationActivity : AppCompatActivity() {
 
         //데이터 어레이
         private val names = arrayListOf<String>(
-            "이순신", "강감찬", "연개소문", "김유신", "을지문덕"
+            "이순신", "강감찬", "연개소문", "김유신", "을지문덕", "링컨", "워싱턴", "태종", "박혁거세", "광개토대왕"
         )
 
         init {
