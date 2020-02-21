@@ -38,6 +38,7 @@ class CodeOfConduct : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         }
 
 
@@ -45,9 +46,16 @@ class CodeOfConduct : AppCompatActivity() {
             val intent = Intent(this, ScreeningClinicMap::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         }
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        overridePendingTransition(0, 0);
+    }
+
 
     fun getUrl(myWebView: WebView) {
 

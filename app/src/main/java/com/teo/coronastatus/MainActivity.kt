@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         board_btn.setImageResource(R.drawable.board_click)
         board_tv.setTextColor(Color.parseColor("#0321C6"))
 
+        //바텀 네비게이션 기능
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMap::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
@@ -113,7 +114,6 @@ class MainActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
-
 
         refresh_lottie.setOnClickListener {
             //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
@@ -167,6 +167,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
 //        Log.d(TAG, "onResume")
         super.onResume()
+        overridePendingTransition(0, 0);
 
         //DB에서 현재 국내 코로나 현황을 가져오는 메소드
         //onCreate가 아닌 onResume인 이유는 1회만 실행하는 게 아닌 다른 액티비티로부터 넘어왔을때도 자동으로 새로고침을 해주기 위해서

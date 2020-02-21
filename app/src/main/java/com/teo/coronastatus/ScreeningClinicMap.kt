@@ -161,6 +161,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             }
         }
 
+        //바텀 네비게이션 기능 추가
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
@@ -171,6 +172,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             val intent = Intent(this, CodeOfConduct::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
+
         }
 
         //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
@@ -588,10 +590,10 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     /*override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop")
-    }
+    }*/
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume")
-    }*/
+        overridePendingTransition(0, 0);
+    }
 
 }
