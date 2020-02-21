@@ -63,7 +63,7 @@
             android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:gravity="center"
-            android:text="행동수칙" />
+            android:text="알람" />
 
 
     </LinearLayout>
@@ -106,7 +106,7 @@
             android:background="@android:color/transparent"
             android:padding="7dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/doctor" />
+            android:src="@drawable/ic_notifications_black_24dp" />
 
 
     </LinearLayout>
