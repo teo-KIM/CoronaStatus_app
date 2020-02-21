@@ -1,6 +1,8 @@
 package com.teo.coronastatus
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,7 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_notification.*
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -41,6 +44,23 @@ class NotificationActivity : AppCompatActivity() {
                 selectName.text = selectItem
                 //Toast.makeText(this, selectItem, Toast.LENGTH_SHORT).show()
             }*/
+
+        //바텀 네비게이션 기능
+        board_btn.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            startActivity(intent)
+        }
+
+        map_btn.setOnClickListener {
+            val intent = Intent(this, ScreeningClinicMapActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            startActivity(intent)
+        }
+
+        //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
+        diagnose_btn.setImageResource(R.drawable.ic_notifications_click_24dp)
+        diagnose_tv.setTextColor(Color.parseColor("#0321C6"))
     }
 
     fun getNotification() {
