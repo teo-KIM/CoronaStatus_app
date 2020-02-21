@@ -68,6 +68,8 @@
             />
         <activity android:name="com.teo.coronastatus.CodeOfConductActivity"
             />
+        <activity android:name="com.teo.coronastatus.NotificationActivity"
+            />
 
         <!--        MyFirebaseMessagingService 서비스 설정-->
         <service android:name="com.teo.coronastatus.MyFirebaseMessagingService">
