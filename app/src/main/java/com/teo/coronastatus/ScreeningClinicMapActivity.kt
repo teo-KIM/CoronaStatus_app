@@ -27,13 +27,12 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.util.Log
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.screening_clinic_map.view.*
 
 
-class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventListener,
+class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     MapView.POIItemEventListener {
 
-    private val TAG: String = ScreeningClinicMap::class.java.simpleName
+    private val TAG: String = ScreeningClinicMapActivity::class.java.simpleName
 
     lateinit var mapView: MapView
 
@@ -74,7 +73,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         map_tv.setTextColor(Color.parseColor("#0321C6"))
 
         //화면에 맵뷰를 보여준다
-        mapView = MapView(this@ScreeningClinicMap)
+        mapView = MapView(this@ScreeningClinicMapActivity)
         val mapViewContainer = map_view as ViewGroup
         mapViewContainer.addView(mapView)
         mapView.setZoomLevel(8, true);
@@ -115,7 +114,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             if (patient_location_click == 0) {
                 patientPlaceMarker(mapView)
                 patient_location_click = 1
-                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT)
                     .show()
                 //클릭한 경우 아이콘을 GONE으로 변화시키고 로딩중인 Lottie 표시
                 patient_location_btn.visibility = View.GONE
@@ -128,7 +127,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
             } else {
                 patient_location_click = 0
-                Toast.makeText(this@ScreeningClinicMap, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT)
                     .show()
                 mapView.removePOIItems(patients_location_markers)
                 patient_location_btn.setBackgroundColor(Color.WHITE)
@@ -139,7 +138,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
             if (patient_hospital_click == 0) {
                 patient_hospital_click = 1
                 patientHospitalMarker(mapView)
-                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT)
                     .show()
 
                 //클릭한 경우 아이콘을 GONE으로 변화시키고 로딩중인 Lottie 표시
@@ -154,7 +153,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
             } else {
                 patient_hospital_click = 0
-                Toast.makeText(this@ScreeningClinicMap, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT)
                     .show()
                 mapView.removePOIItems(patients_hospital_markers)
                 patient_hospital_btn.setBackgroundColor(Color.WHITE)
@@ -169,7 +168,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         }
 
         diagnose_btn.setOnClickListener {
-            val intent = Intent(this, CodeOfConduct::class.java);
+            val intent = Intent(this, CodeOfConductActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
 
@@ -178,7 +177,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
         location_btn.setOnClickListener {
             mapView.setMapCenterPoint(currentMapPoint, true);
-            Toast.makeText(this@ScreeningClinicMap, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT)
+            Toast.makeText(this@ScreeningClinicMapActivity, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT)
                 .show()
         }
 
@@ -425,7 +424,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
     //위치 서비스가 비활성화 되어있을 경우 다이얼로그를 띄워서 활성화 할 수 있도록 하는 메소드
     fun showDialogForLocationServiceSetting() {
 
-        val builder = AlertDialog.Builder(this@ScreeningClinicMap)
+        val builder = AlertDialog.Builder(this@ScreeningClinicMapActivity)
 
         builder.setTitle("위치 서비스 비활성화");
         builder.setMessage(
@@ -458,7 +457,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
         //런타임 퍼미션 처리
         // 1. 위치 퍼미션 가지고 있는지 확인
         val hasFineLocationPermission = ContextCompat.checkSelfPermission(
-            this@ScreeningClinicMap,
+            this@ScreeningClinicMapActivity,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
 
@@ -470,21 +469,21 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
 
             // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우
             if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this@ScreeningClinicMap,
+                    this@ScreeningClinicMapActivity,
                     REQUIRED_PERMISSIONS[0]
                 )
             ) {
 
                 // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
                 Toast.makeText(
-                    this@ScreeningClinicMap,
+                    this@ScreeningClinicMapActivity,
                     "이 앱을 실행하려면 위치 접근 권한이 필요합니다.",
                     Toast.LENGTH_LONG
                 )
                     .show()
                 // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
                 ActivityCompat.requestPermissions(
-                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
+                    this@ScreeningClinicMapActivity, REQUIRED_PERMISSIONS,
                     PERMISSIONS_REQUEST_CODE
                 )
 
@@ -492,7 +491,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
                 // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
                 ActivityCompat.requestPermissions(
-                    this@ScreeningClinicMap, REQUIRED_PERMISSIONS,
+                    this@ScreeningClinicMapActivity, REQUIRED_PERMISSIONS,
                     PERMISSIONS_REQUEST_CODE
                 )
             }
@@ -533,7 +532,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 ) {
 
                     Toast.makeText(
-                        this@ScreeningClinicMap,
+                        this@ScreeningClinicMapActivity,
                         "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.",
                         Toast.LENGTH_LONG
                     ).show()
@@ -542,7 +541,7 @@ class ScreeningClinicMap : AppCompatActivity(), MapView.CurrentLocationEventList
                 } else {
 
                     Toast.makeText(
-                        this@ScreeningClinicMap,
+                        this@ScreeningClinicMapActivity,
                         "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ",
                         Toast.LENGTH_LONG
                     ).show()

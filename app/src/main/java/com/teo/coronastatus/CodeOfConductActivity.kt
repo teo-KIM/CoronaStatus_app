@@ -13,7 +13,7 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
 
-class CodeOfConduct : AppCompatActivity() {
+class CodeOfConductActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +43,7 @@ class CodeOfConduct : AppCompatActivity() {
 
 
         map_btn.setOnClickListener {
-            val intent = Intent(this, ScreeningClinicMap::class.java);
+            val intent = Intent(this, ScreeningClinicMapActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)

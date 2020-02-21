@@ -2,10 +2,8 @@ package com.teo.coronastatus
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -28,8 +26,6 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import java.io.Serializable
-import java.lang.Math.log
 
 
 private val TAG: String = MainActivity::class.java.simpleName
@@ -104,13 +100,13 @@ class MainActivity : AppCompatActivity() {
 
         //바텀 네비게이션 기능
         map_btn.setOnClickListener {
-            val intent = Intent(this, ScreeningClinicMap::class.java)
+            val intent = Intent(this, ScreeningClinicMapActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
 
         diagnose_btn.setOnClickListener {
-            val intent = Intent(this, CodeOfConduct::class.java)
+            val intent = Intent(this, CodeOfConductActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
