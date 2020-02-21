@@ -168,10 +168,9 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
         }
 
         diagnose_btn.setOnClickListener {
-            val intent = Intent(this, CodeOfConductActivity::class.java);
+            val intent = Intent(this, NotificationActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
-
         }
 
         //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.

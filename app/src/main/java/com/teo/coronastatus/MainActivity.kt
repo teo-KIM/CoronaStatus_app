@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         diagnose_btn.setOnClickListener {
-            val intent = Intent(this, CodeOfConductActivity::class.java)
+            val intent = Intent(this, NotificationActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
