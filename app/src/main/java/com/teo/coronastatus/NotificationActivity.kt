@@ -32,6 +32,17 @@ class NotificationActivity : AppCompatActivity() {
             }*/
     }
 
+    fun getNotification() {
+
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        //페이지 이동 시 넘어가는 애니메이션 삭제
+        overridePendingTransition(0, 0);
+    }
+
     private class MyCustomAdapter(context: Context) : BaseAdapter() {
         private val mContext: Context
 
@@ -69,6 +80,4 @@ class NotificationActivity : AppCompatActivity() {
             return rowMain
         }
     }
-
-
 }
