@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.board_btn
-import kotlinx.android.synthetic.main.screening_clinic_map.*
-import kotlinx.android.synthetic.main.screening_clinic_map.diagnose_btn
+import kotlinx.android.synthetic.main.activity_screening_clinic_map.*
+import kotlinx.android.synthetic.main.activity_screening_clinic_map.diagnose_btn
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -57,7 +57,7 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.screening_clinic_map)
+        setContentView(R.layout.activity_screening_clinic_map)
 
         patient_location_click = 0
         patient_hospital_click = 0

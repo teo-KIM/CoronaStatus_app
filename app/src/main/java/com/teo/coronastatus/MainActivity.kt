@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 //            Log.d(TAG, "body : " + intent.getStringExtra("body"))
             when (function) {
                 //알람을 눌러서 들어온 경우
-                "notification" -> {
+                "activity_notification" -> {
 //                    Log.d(TAG, "function : " + intent.getStringExtra("function"))
                     val builder = AlertDialog.Builder(this@MainActivity)
 
