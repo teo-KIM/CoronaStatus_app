@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +36,8 @@ class NotificationActivity : AppCompatActivity() {
         getNotification()
 
         //어답터 설정
+        //TODO : 현재 데이터는 잘 가져오지만 가져온 데이터를 리스트뷰와 연결하지 못함. 해결 요망
+        //웹 프론트에서 알람 날린거 그대로 저장 할 수 있도록 간단한 페이지 및 로직 구성할것
         val listView = findViewById<ListView>(R.id.notification_lv)
         listView.adapter = MyCustomAdapter(this, dateList, contentList)
 
@@ -93,7 +97,7 @@ class NotificationActivity : AppCompatActivity() {
                     contentList.add(content)
 
 //                    Log.d(TAG, "dateList[$i] : "+ dateList[i])
-//                    Log.d(TAG, "contentList($i) : contentList")
+//                    Log.d(TAG, "contentList($i) : " + contentList[i])
                 }
             }
 
@@ -141,6 +145,7 @@ class NotificationActivity : AppCompatActivity() {
 
             val datesTv = rowMain.findViewById<TextView>(R.id.date_tv)
             datesTv.text = dates.get(position)
+            Log.d(TAG, "position : "+position)
             val contentsTv = rowMain.findViewById<TextView>(R.id.content_tv)
             contentsTv.text = contents.get(position)
 
