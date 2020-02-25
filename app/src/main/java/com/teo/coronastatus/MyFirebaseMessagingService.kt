@@ -43,7 +43,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra("function", "notification")
+        intent.putExtra("function", "activity_notification")
         intent.putExtra("title", remoteMessage.notification?.title)
         intent.putExtra("body", remoteMessage.notification?.body)
 

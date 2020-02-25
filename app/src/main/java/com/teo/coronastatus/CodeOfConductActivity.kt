@@ -7,17 +7,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.code_of_conduct.*
+import kotlinx.android.synthetic.main.activity_code_of_conduct.*
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
 
-class CodeOfConduct : AppCompatActivity() {
+class CodeOfConductActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.code_of_conduct)
+        setContentView(R.layout.activity_code_of_conduct)
 
         //현재 CodeOfConduct에 있다는 것을 알려주기 위함
         diagnose_btn.setImageResource(R.drawable.doctor_click)
@@ -38,16 +38,24 @@ class CodeOfConduct : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         }
 
 
         map_btn.setOnClickListener {
-            val intent = Intent(this, ScreeningClinicMap::class.java);
+            val intent = Intent(this, ScreeningClinicMapActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         }
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        overridePendingTransition(0, 0);
+    }
+
 
     fun getUrl(myWebView: WebView) {
 

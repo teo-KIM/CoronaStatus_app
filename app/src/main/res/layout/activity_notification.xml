@@ -1,32 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:id="@+id/map_view"
+
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:id="@+id/notification_lv"
+        app:layout_constraintHorizontal_weight="10"
         app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-
-    <ImageButton
-        android:id="@+id/location_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="32dp"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_my_location_black_24dp" />
 
     <LinearLayout
         android:id="@+id/bottom_text"
@@ -63,7 +50,7 @@
             android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:gravity="center"
-            android:text="행동수칙" />
+            android:text="알람" />
 
 
     </LinearLayout>
@@ -106,53 +93,9 @@
             android:background="@android:color/transparent"
             android:padding="7dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/doctor" />
+            android:src="@drawable/ic_notifications_black_24dp" />
 
 
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/patient_hospital_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_patients_hospital_24dp" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/hospital_simple_loader"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_fileName="simple_loader.json" />
-
-    <ImageButton
-        android:id="@+id/patient_location_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_do_not_disturb_red_35dp" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/location_simple_loader"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@android:color/white"
-        app:lottie_fileName="simple_loader.json" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
