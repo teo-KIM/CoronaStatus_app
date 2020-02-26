@@ -10,13 +10,15 @@ import android.widget.TextView
 
 private val TAG: String = MyCustomAdapter::class.java.simpleName
 
-private class MyCustomAdapter(context: Context, dateList : MutableList<String>, contentList : MutableList<String>) : BaseAdapter() {
+class MyCustomAdapter(context: Context, dateList : MutableList<String>, contentList : MutableList<String>) : BaseAdapter() {
     private val mContext: Context
 
     //listView에 표현 해 줄 알람 온 날짜 리스트
     private val dates = dateList
     //listView에 표현 해 줄 알람 내용 리스트
     private val contents = contentList
+
+
 
     init {
         mContext = context
@@ -36,6 +38,7 @@ private class MyCustomAdapter(context: Context, dateList : MutableList<String>, 
     }
 
     override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
+
         val layoutInflater = LayoutInflater.from(mContext)
         val rowMain = layoutInflater.inflate(R.layout.item_notification, viewGroup, false)
 
