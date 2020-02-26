@@ -32,14 +32,23 @@ class NotificationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
 
+        val listView = findViewById<ListView>(R.id.notification_lv)
+
+        Handler().postDelayed({
+            listView.adapter = MyCustomAdapter(this, dateList, contentList)
+        },500)
+
+//        Log.d(TAG, "dateList : "+dateList)
+//        Log.d(TAG, "contentList : "+contentList)
+
         //알람 날짜와 내용을 db에서부터 가져온다.
         getNotification()
 
         //어답터 설정
         //TODO : 현재 데이터는 잘 가져오지만 가져온 데이터를 리스트뷰와 연결하지 못함. 해결 요망
         //웹 프론트에서 알람 날린거 그대로 저장 할 수 있도록 간단한 페이지 및 로직 구성할것
-        val listView = findViewById<ListView>(R.id.notification_lv)
-        listView.adapter = MyCustomAdapter(this, dateList, contentList)
+
+
 
         //아이템 클릭 리스너
         /*listView.onItemClickListener =
@@ -99,6 +108,7 @@ class NotificationActivity : AppCompatActivity() {
 //                    Log.d(TAG, "dateList[$i] : "+ dateList[i])
 //                    Log.d(TAG, "contentList($i) : " + contentList[i])
                 }
+
             }
 
             override fun onFailure(call: Call?, e: IOException?) {
@@ -106,6 +116,7 @@ class NotificationActivity : AppCompatActivity() {
                 println("Failed to get notification from NotificationActivity.kt")
             }
         })
+
     }
 
     override fun onResume() {
@@ -114,42 +125,5 @@ class NotificationActivity : AppCompatActivity() {
         overridePendingTransition(0, 0);
     }
 
-    private class MyCustomAdapter(context: Context, dateList : MutableList<String>, contentList : MutableList<String>) : BaseAdapter() {
-        private val mContext: Context
 
-        //listView에 표현 해 줄 알람 온 날짜 리스트
-        private val dates = dateList
-        //listView에 표현 해 줄 알람 내용 리스트
-        private val contents = contentList
-
-        init {
-            mContext = context
-        }
-
-        override fun getCount(): Int {
-            return dates.size
-        }
-
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getItem(position: Int): Any {
-            val selectItem = dates.get(position)
-            return selectItem
-        }
-
-        override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
-            val layoutInflater = LayoutInflater.from(mContext)
-            val rowMain = layoutInflater.inflate(R.layout.item_notification, viewGroup, false)
-
-            val datesTv = rowMain.findViewById<TextView>(R.id.date_tv)
-            datesTv.text = dates.get(position)
-            Log.d(TAG, "position : "+position)
-            val contentsTv = rowMain.findViewById<TextView>(R.id.content_tv)
-            contentsTv.text = contents.get(position)
-
-            return rowMain
-        }
-    }
 }

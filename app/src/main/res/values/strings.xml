@@ -7,5 +7,6 @@
     <string name="status" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/status</string>
     <string name="url" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/url</string>
     <string name="notification" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/notification</string>
+    <string name="selected_hospital" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/selectedhospital</string>
 
 </resources>

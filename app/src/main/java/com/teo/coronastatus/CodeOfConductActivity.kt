@@ -63,7 +63,7 @@ class CodeOfConductActivity : AppCompatActivity() {
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 
-        var infoUrl: String = "https://www.google.com"
+        var infoUrl: String = getString(R.string.url)
 
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response?) {
