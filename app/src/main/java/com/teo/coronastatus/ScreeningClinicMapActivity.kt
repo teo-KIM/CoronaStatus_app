@@ -39,10 +39,12 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
     //마커를 전역변수로 만들어서 동일한 아이템을 켰다 껐다 할 수 있도록 하기 위함
     lateinit var patients_location_markers: Array<MapPOIItem?>
     lateinit var patients_hospital_markers: Array<MapPOIItem?>
+    lateinit var selected_hospital_markers: Array<MapPOIItem?>
 
     //맵에 표시되는 이모티콘들이 눌려있는지 아닌지를 구분하기 위한 변수
     var patient_location_click = 0
     var patient_hospital_click = 0
+    var selected_hospital_click = 0
 
     //내 위치 정보를 가져오기 위한 permission 관련 변수
     //checkRunTimePermission() 에서 사용
@@ -59,16 +61,19 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_screening_clinic_map)
 
+        //버튼들이 디폴트로 눌려있도록 설정
         patient_location_click = 0
         patient_hospital_click = 0
+        selected_hospital_click = 0
 //        Log.d(TAG, "onCreate")
 
         //아이콘들이 mapView 최상위로 올라오도록 설정
         location_btn.bringToFront()
         patient_hospital_btn.bringToFront()
         patient_location_btn.bringToFront()
+        selected_hospital_btn.bringToFront()
 
-        //현재 ScreeningClinicMap에 있다는 것을 알려주기 위함
+        //현재 ScreeningClinicMap에 있다는 것을 알려주기 위해 바텀 네비게이션 맵 아이콘 및 텍스트 색상 변경
         map_btn.setImageResource(R.drawable.ic_map_click)
         map_tv.setTextColor(Color.parseColor("#0321C6"))
 
@@ -85,6 +90,10 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
         } else {
             checkRunTimePermission()
         }
+
+        //===========================================
+        //마커 관련
+        //===========================================
 
         //디폴드 값이 모든 마커를 찍어주도록 변경한다
         patientHospitalMarker(mapView)
@@ -107,9 +116,18 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
             patient_location_btn.visibility = View.VISIBLE
         }, 1000)
 
+        /*selectedHospitalMarker(mapView)
+        selected_hospital_click = 1
+
+        selected_hospital_btn.visibility = View.GONE
+        selected_hospital_simple_loader.playAnimation()
+        Handler().postDelayed({
+            selected_hospital_btn.setBackgroundColor(Color.BLACK)
+            selected_hospital_btn.visibility = View.VISIBLE
+        }, 1000)*/
+
 
         patient_location_btn.setOnClickListener {
-
             //확진자가 돌아다닌 위치를 나타내주도록 하는 아이콘 클릭시
             if (patient_location_click == 0) {
                 patientPlaceMarker(mapView)
@@ -141,6 +159,7 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
                 patient_location_btn.setBackgroundColor(Color.WHITE)
             }
         }
+
         //확진자가 입원해 있는 병원 위치를 나타내주도록 하는 아이콘 클릭시
         patient_hospital_btn.setOnClickListener {
             if (patient_hospital_click == 0) {
@@ -176,13 +195,47 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
             }
         }
 
+        //선별진료소 마커 나타내주는 메소드
+        /*selected_hospital_btn.setOnClickListener {
+            if (selected_hospital_click == 0) {
+                selected_hospital_click = 1
+                selectedHospitalMarker(mapView)
+                Toast.makeText(
+                    this@ScreeningClinicMapActivity,
+                    "선별 진료소에 마커를 표시합니다.",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+
+                //클릭한 경우 아이콘을 GONE으로 변화시키고 로딩중인 Lottie 표시
+                selected_hospital_btn.visibility = View.GONE
+                selected_hospital_simple_loader.playAnimation()
+
+                Handler().postDelayed({
+                    selected_hospital_btn.setBackgroundColor(Color.BLACK)
+                    selected_hospital_btn.visibility = View.VISIBLE
+                }, 1000)
+
+
+            } else {
+                selected_hospital_click = 0
+                Toast.makeText(
+                    this@ScreeningClinicMapActivity,
+                    "선별 진료소에 마커를 지웁니다.",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                mapView.removePOIItems(selected_hospital_markers)
+                selected_hospital_btn.setBackgroundColor(Color.WHITE)
+            }
+        }*/
+
         //바텀 네비게이션 기능 추가
         board_btn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
-
         diagnose_btn.setOnClickListener {
             val intent = Intent(this, NotificationActivity::class.java);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
@@ -434,6 +487,78 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
                 patients_location_markers[i] = marker
             }
             mapView.addPOIItems(patients_location_markers)
+
+        }, 1000)
+
+    }
+
+    //선별진료소에 마커를 찍어줄 메소드
+    fun selectedHospitalMarker(mapView: MapView) {
+
+        val url = URL(getString(R.string.selected_hospital))
+        val request = Request.Builder().url(url).build()
+        val client = OkHttpClient()
+
+        //db에서 가져올 데이터를 담을 List
+        val nameList = mutableListOf<String>()
+        val latlongList = mutableListOf<String>()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response?) {
+                //응답이 있을 경우 call은 무조건 null이 아니므로 ?를 쓰지 않는다.
+                //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
+
+                val body = response?.body()?.string()
+                Log.d(TAG, "Success to execute request! : $body")
+
+                val jObject = JSONObject(body)
+                val jArray = jObject.getJSONArray("selectedHospital")
+
+                for (i in 0 until jArray.length()) {
+                    val obj = jArray.getJSONObject(i)
+
+                    val name = obj.getString("name")
+                    nameList.add(name)
+                    //name = db에 저장된 선별 진료소 이름
+
+                    val latlong = obj.getString("latlong")
+                    latlongList.add(latlong)
+                    //latlong = db에 저장된 선별 진료소의 경도,위도
+
+//                    Log.d(TAG, "latlong : "+ latlong)
+//                    Log.d(TAG, "classification($i) : $classification")
+                }
+
+            }
+
+            override fun onFailure(call: Call?, e: IOException?) {
+                //("not implemented") //To change body of created functions use File | Settings | File Templates.
+                println("Failed to execute request!")
+            }
+        })
+
+        Handler().postDelayed({
+
+            selected_hospital_markers = arrayOfNulls<MapPOIItem>(nameList.size)
+            for (i in 0 until nameList.size) {
+
+                var latlong = latlongList.get(i).split(", ")
+
+                var longitude = latlong[0]
+                var latitude = latlong[1].trim()
+
+                val marker = MapPOIItem()
+
+                marker.itemName = nameList.get(i)
+                marker.tag = 0
+                marker.mapPoint =
+                    MapPoint.mapPointWithGeoCoord(longitude.toDouble(), latitude.toDouble())
+                marker.markerType = MapPOIItem.MarkerType.RedPin
+                marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+//                mapView.addPOIItem(marker)
+                selected_hospital_markers[i] = marker
+            }
+            mapView.addPOIItems(selected_hospital_markers)
 
         }, 1000)
 
