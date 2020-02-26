@@ -114,7 +114,11 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
             if (patient_location_click == 0) {
                 patientPlaceMarker(mapView)
                 patient_location_click = 1
-                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 방문지에 마커를 표시합니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@ScreeningClinicMapActivity,
+                    "확진자 방문지에 마커를 표시합니다.",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 //클릭한 경우 아이콘을 GONE으로 변화시키고 로딩중인 Lottie 표시
                 patient_location_btn.visibility = View.GONE
@@ -127,7 +131,11 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
 
             } else {
                 patient_location_click = 0
-                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 방문지에 마커를 지웁니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@ScreeningClinicMapActivity,
+                    "확진자 방문지에 마커를 지웁니다.",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 mapView.removePOIItems(patients_location_markers)
                 patient_location_btn.setBackgroundColor(Color.WHITE)
@@ -138,7 +146,11 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
             if (patient_hospital_click == 0) {
                 patient_hospital_click = 1
                 patientHospitalMarker(mapView)
-                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 입원 병원에 마커를 표시합니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@ScreeningClinicMapActivity,
+                    "확진자 입원 병원에 마커를 표시합니다.",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
 
                 //클릭한 경우 아이콘을 GONE으로 변화시키고 로딩중인 Lottie 표시
@@ -153,7 +165,11 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
 
             } else {
                 patient_hospital_click = 0
-                Toast.makeText(this@ScreeningClinicMapActivity, "확진자 입원 병원에 마커를 지웁니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@ScreeningClinicMapActivity,
+                    "확진자 입원 병원에 마커를 지웁니다.",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 mapView.removePOIItems(patients_hospital_markers)
                 patient_hospital_btn.setBackgroundColor(Color.WHITE)
@@ -176,7 +192,11 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
         //현위치 버튼 클릭 시 색이 칠해진 현위치_클릭 버튼으로 대체한다.
         location_btn.setOnClickListener {
             mapView.setMapCenterPoint(currentMapPoint, true);
-            Toast.makeText(this@ScreeningClinicMapActivity, "실제 위치와 차이가 날 수 있습니다.", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                this@ScreeningClinicMapActivity,
+                "실제 위치와 차이가 날 수 있습니다.",
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
 
@@ -251,9 +271,9 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
 //        }
     }
 
-
-    //--------------------------------마커 찍는 메소드 시작
-
+    //===========================================
+    //마커 찍는 메소드 시작
+    //===========================================
     //확진자가 입원중인 병원에 마커를 찍어주는 메소드
     fun patientHospitalMarker(mapView: MapView) {
 
@@ -419,7 +439,9 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
 
     }
 
-    //-----------------------------------위치 서비스 관련 메소드
+    //===========================================
+    //위치 서비스 관련 메소드
+    //===========================================
     //위치 서비스가 비활성화 되어있을 경우 다이얼로그를 띄워서 활성화 할 수 있도록 하는 메소드
     fun showDialogForLocationServiceSetting() {
 
@@ -567,8 +589,9 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
                 }
         }
     }
-
+    //===========================================
     //back 버튼 누를 시 현황판 (Main) 액티비티로 이동
+    //===========================================
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(this, MainActivity::class.java);
@@ -576,7 +599,9 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
         startActivity(intent)
     }
 
+    //===========================================
     //액티비티가 Destroy될 경우 trackingMode를 끄고 현재 위치를 보여주는 마커를 삭제한다.
+    //===========================================
     override fun onDestroy() {
         super.onDestroy()
         mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
@@ -589,6 +614,9 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
         super.onStop()
         Log.d(TAG, "onStop")
     }*/
+    //===========================================
+    //액티비티 넘어갈 때 효과 애니메이션 삭제
+    //===========================================
     override fun onResume() {
         super.onResume()
         overridePendingTransition(0, 0);
