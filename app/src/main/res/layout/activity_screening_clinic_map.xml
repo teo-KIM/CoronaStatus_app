@@ -157,7 +157,7 @@
         app:lottie_fileName="simple_loader.json" />
 
     <ImageButton
-        android:id="@+id/selected_hospital"
+        android:id="@+id/selected_hospital_btn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="148dp"
