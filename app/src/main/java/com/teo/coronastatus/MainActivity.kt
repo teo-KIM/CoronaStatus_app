@@ -61,9 +61,12 @@ class MainActivity : AppCompatActivity() {
             //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
             val token = FirebaseInstanceId.getInstance().token
 //            Log.d(TAG, "device token : " + token)
+            updateUserToken(token)
         } catch (e: NullPointerException) {
             e.printStackTrace()
         }
+
+
 
         //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
         //onCreate에 넣은 이뉴는 onResume, onStart의 경우 onDestroy 이전에 1회 이상 불러질 가능성이 있기 때문.
@@ -115,6 +118,40 @@ class MainActivity : AppCompatActivity() {
             //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
             fetchJson()
         }
+    }
+
+    fun updateUserToken(token : String?) {
+
+        // URL을 만들어 주고
+        val url = URL(getString(R.string.token))
+
+        //데이터를 담아 보낼 바디를 만든다
+        val requestBody: RequestBody = FormBody.Builder()
+            .add("token", token)
+            .build()
+
+        // OkHttp Request 를 만들어준다.
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        // 클라이언트 생성
+        val client = OkHttpClient()
+
+        // 요청 전송
+        client.newCall(request).enqueue(object : Callback {
+
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("요청", "요청 완료")
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("요청", "요청 실패 ")
+            }
+
+        })
+
     }
 
     fun setLastUpdateTime() {
