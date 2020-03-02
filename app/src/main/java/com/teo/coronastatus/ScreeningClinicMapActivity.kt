@@ -506,7 +506,7 @@ class ScreeningClinicMapActivity : AppCompatActivity(), MapView.CurrentLocationE
                 //json 형식으로 받아온 데이터를 until_yesterday, today 배열에 저장하고 해당하는 textview에 값을 넣어준다.
 
                 val body = response?.body()?.string()
-                Log.d(TAG, "Success to execute request! : $body")
+//                Log.d(TAG, "Success to execute request! : $body")
 
                 val jObject = JSONObject(body)
                 val jArray = jObject.getJSONArray("selectedHospital")
