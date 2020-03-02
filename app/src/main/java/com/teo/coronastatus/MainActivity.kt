@@ -122,15 +122,15 @@ class MainActivity : AppCompatActivity() {
 
     fun updateUserToken(token : String?) {
 
-        // URL을 만들어 주고
         val url = URL(getString(R.string.token))
 
-        //데이터를 담아 보낼 바디를 만든다
+        //데이터(사용자 토큰)를 담아 보낼 requestBody
         val requestBody: RequestBody = FormBody.Builder()
             .add("token", token)
+            .add("select","token")
             .build()
 
-        // OkHttp Request 를 만들어준다.
+        // OkHttp Request 생성
         val request = Request.Builder()
             .url(url)
             .post(requestBody)
@@ -143,11 +143,12 @@ class MainActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
 
             override fun onResponse(call: Call, response: Response) {
-                Log.d("요청", "요청 완료")
+
+//                Log.d("요청", "요청 완료")
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("요청", "요청 실패 ")
+//                Log.d("요청", "요청 실패 ")
             }
 
         })
