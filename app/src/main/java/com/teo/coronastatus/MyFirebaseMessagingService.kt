@@ -16,10 +16,11 @@ import android.graphics.Color
 import android.os.Build
 
 
+private val TAG: String = MyFirebaseMessagingService::class.java.simpleName
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     //firebase에서 메시지를 받으면 디바이스에 알람이 뜨게 하는 class
-    private val TAG: String = MyFirebaseMessagingService::class.java.simpleName
+    //앱이 사용중일 경우에만 현재 클래스에서 처리한다.
 
     override fun onNewToken(token: String) {
 //        Log.d("New_Token", token)
@@ -30,10 +31,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         //받은 메시지에서 remoteMessage를 추출한다.
         super.onMessageReceived(remoteMessage)
-        Log.d(TAG, "from : ${remoteMessage.from}")
+//        Log.d(TAG, "from : ${remoteMessage.from}")
 
         if (remoteMessage.notification != null) {
-            Log.d(TAG, "Message body : ${remoteMessage.notification?.body}")
+//            Log.d(TAG, "Message body : ${remoteMessage.notification?.body}")
             sendNotification(remoteMessage)
         }
     }
@@ -41,11 +42,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun sendNotification(remoteMessage: RemoteMessage) {
         //추출해온 remoteMessage에서 body, title을 추출해서 디바이스로 알림을 전송한다.
 
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, NotificationActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra("function", "activity_notification")
-        intent.putExtra("title", remoteMessage.notification?.title)
-        intent.putExtra("body", remoteMessage.notification?.body)
 
         val pendingIntent = PendingIntent.getActivity(this@MyFirebaseMessagingService, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
