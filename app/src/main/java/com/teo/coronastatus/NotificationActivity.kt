@@ -28,25 +28,16 @@ class NotificationActivity : AppCompatActivity() {
     val dateList = mutableListOf<String>()
     val contentList = mutableListOf<String>()
 
+    lateinit var listView : ListView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
 
-        val listView = findViewById<ListView>(R.id.notification_lv)
-
-        Handler().postDelayed({
-            listView.adapter = MyCustomAdapter(this, dateList, contentList)
-        },500)
+        listView = findViewById(R.id.notification_lv)
 
 //        Log.d(TAG, "dateList : "+dateList)
 //        Log.d(TAG, "contentList : "+contentList)
-
-        //알람 날짜와 내용을 db에서부터 가져온다.
-        getNotification()
-
-        //어답터 설정
-        //웹 프론트에서 알람 날린거 그대로 저장 할 수 있도록 간단한 페이지 및 로직 구성할것
-
 
 
         //아이템 클릭 리스너
@@ -74,6 +65,8 @@ class NotificationActivity : AppCompatActivity() {
         diagnose_btn.setImageResource(R.drawable.ic_notifications_click_24dp)
         diagnose_tv.setTextColor(Color.parseColor("#0321C6"))
     }
+
+
 
     fun getNotification() {
         val url = URL(getString(R.string.notification))
@@ -108,13 +101,19 @@ class NotificationActivity : AppCompatActivity() {
 //                    Log.d(TAG, "contentList($i) : " + contentList[i])
                 }
 
+
             }
 
             override fun onFailure(call: Call?, e: IOException?) {
                 //("not implemented") //To change body of created functions use File | Settings | File Templates.
                 println("Failed to get notification from NotificationActivity.kt")
             }
+
+
         })
+        Handler().postDelayed({
+            listView.adapter = MyCustomAdapter(this@NotificationActivity, dateList, contentList)
+        },500)
 
     }
 
@@ -122,6 +121,9 @@ class NotificationActivity : AppCompatActivity() {
         super.onResume()
         //액티비티 이동 시 넘어가는 애니메이션 삭제
         overridePendingTransition(0, 0);
+
+        //알람 날짜와 내용을 db에서부터 가져온다.
+        getNotification()
     }
 
 
