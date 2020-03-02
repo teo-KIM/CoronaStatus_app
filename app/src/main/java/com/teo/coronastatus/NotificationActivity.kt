@@ -45,7 +45,6 @@ class NotificationActivity : AppCompatActivity() {
         getNotification()
 
         //어답터 설정
-        //TODO : 현재 데이터는 잘 가져오지만 가져온 데이터를 리스트뷰와 연결하지 못함. 해결 요망
         //웹 프론트에서 알람 날린거 그대로 저장 할 수 있도록 간단한 페이지 및 로직 구성할것
 
 
