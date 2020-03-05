@@ -23,9 +23,12 @@ import android.widget.Toast.makeText
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.teo.coronastatus.Singleton.showToast
 
 
 private val TAG: String = MainActivity::class.java.simpleName
@@ -46,35 +49,42 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        appUpdateManager = AppUpdateManagerFactory.create(this)
-
-        appUpdateManager.appUpdateInfo.addOnSuccessListener {
-            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-            ) {   //  check for the type of update flow you want
-                requestUpdate(appUpdateInfo = null)
-            }
-        }
-
         try {
             //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
             //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
             val token = FirebaseInstanceId.getInstance().token
 //            Log.d(TAG, "device token : " + token)
+            //유저 토큰을 DB에 업데이트
             updateUserToken(token)
         } catch (e: NullPointerException) {
             e.printStackTrace()
         }
 
 
-
-
-
         //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
-        board_btn.setImageResource(R.drawable.board_click)
-        board_tv.setTextColor(Color.parseColor("#0321C6"))
+        changeIconColor()
 
         //바텀 네비게이션 기능
+        setOnClickListener()
+
+        refresh_lottie.setOnClickListener {
+            //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
+            fetchJson()
+        }
+
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+
+        appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {   //  check for the type of update flow you want
+                requestUpdate(it)
+            }
+        }
+    }
+
+    fun setOnClickListener(){
+        //맵 버튼 및 알람 버튼 클릭 리스너 설정
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMapActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
@@ -86,11 +96,11 @@ class MainActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
+    }
 
-        refresh_lottie.setOnClickListener {
-            //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
-            fetchJson()
-        }
+    fun changeIconColor(){
+        board_btn.setImageResource(R.drawable.board_click)
+        board_tv.setTextColor(Color.parseColor("#0321C6"))
     }
 
     fun updateUserToken(token : String?) {
@@ -116,7 +126,6 @@ class MainActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
 
             override fun onResponse(call: Call, response: Response) {
-
 //                Log.d("요청", "요청 완료")
             }
 
@@ -146,15 +155,16 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_FLEXI_UPDATE) {
             when (resultCode) {
                 Activity.RESULT_OK -> { //  handle user's approval
-
                 }
                 Activity.RESULT_CANCELED -> { //  handle user's rejection
                     Log.d(TAG, "Update flow canceled! Result code: $resultCode ")
-
+                    showToast(this@MainActivity, "업데이트를 취소하셨습니다. 앱을 종료합니다.", Toast.LENGTH_LONG)
+                    finishAffinity()
                 }
                 ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {  //  handle update failure
                     Log.d(TAG, "Update flow failed! Result code: $resultCode ")
-                    requestUpdate(appUpdateInfo = null)
+                    showToast(this@MainActivity, "업데이트에 실패하였습니다. 앱을 종료합니다.", Toast.LENGTH_LONG)
+                    finishAffinity()
                 }
 
             }
@@ -180,6 +190,7 @@ class MainActivity : AppCompatActivity() {
         //onCreate가 아닌 onResume인 이유는 1회만 실행하는 게 아닌 다른 액티비티로부터 넘어왔을때도 자동으로 새로고침을 해주기 위해서
         fetchJson()
 
+        //최신 업데이트 상황을 확인하고 최고 업데이트 버전과 다르면 인 앱 업데이트를 진행할 수 있도록 하는 코드
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 appUpdateManager.startUpdateFlowForResult(
@@ -294,7 +305,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        //toast.cancel()이 있는데도 불구하고 토스트 메세지가 바로 없어지지 않음. 수정 요망
+        //Back버튼을 누른 경우 앱이 종료된다는 경고를 토스트 메세지로 띄워준 후 2초 이내에 한번 더 누르면 앱을 종료시킨다.
         second_time = System.currentTimeMillis()
         val toast = makeText(this@MainActivity, "한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
         toast.show()

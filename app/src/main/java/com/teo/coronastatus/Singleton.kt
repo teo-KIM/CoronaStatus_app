@@ -5,7 +5,7 @@ import android.widget.Toast
 
 object Singleton{
 
-    fun Context.showToast(context: Context, text: String, duration: Int = Toast.LENGTH_LONG) {
+    fun showToast(context: Context, text: String, duration: Int = Toast.LENGTH_LONG) {
         Toast.makeText(context, text, duration).show()
     }
 
