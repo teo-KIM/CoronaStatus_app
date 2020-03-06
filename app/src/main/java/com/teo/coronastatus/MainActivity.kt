@@ -23,9 +23,12 @@ import android.widget.Toast.makeText
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.teo.coronastatus.Singleton.showToast
 
 
 private val TAG: String = MainActivity::class.java.simpleName
@@ -46,59 +49,42 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        try {
+            //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
+            //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
+            val token = FirebaseInstanceId.getInstance().token
+//            Log.d(TAG, "device token : " + token)
+            //유저 토큰을 DB에 업데이트
+            updateUserToken(token)
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+        }
+
+
+        //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
+        changeIconColor()
+
+        //바텀 네비게이션 기능
+        setOnClickListener()
+
+        refresh_lottie.setOnClickListener {
+            //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
+            fetchJson()
+        }
+
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                 it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
             ) {   //  check for the type of update flow you want
-                requestUpdate(appUpdateInfo = null)
+                requestUpdate(it)
             }
         }
+    }
 
-        try {
-            //FCM 사용을 위해 사용자 핸드폰의 토큰을 가져온다.
-            //가져온 토큰을 사용하지는 않지만 해당 과정이 없으면 에러가 나는 경우가 있음.
-            val token = FirebaseInstanceId.getInstance().token
-//            Log.d(TAG, "device token : " + token)
-        } catch (e: NullPointerException) {
-            e.printStackTrace()
-        }
-
-        //알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
-        //onCreate에 넣은 이뉴는 onResume, onStart의 경우 onDestroy 이전에 1회 이상 불러질 가능성이 있기 때문.
-        //-> 1회 이상 불러지는 경우 불러질 때 마다 다이얼로그가 뜨게 된다.
-        if (intent.hasExtra("function")) {
-            val function: String? = intent.getStringExtra("function")
-
-//            Log.d(TAG, "title : " + intent.getStringExtra("title"))
-//            Log.d(TAG, "body : " + intent.getStringExtra("body"))
-            when (function) {
-                //알람을 눌러서 들어온 경우
-                "activity_notification" -> {
-//                    Log.d(TAG, "function : " + intent.getStringExtra("function"))
-                    val builder = AlertDialog.Builder(this@MainActivity)
-
-                    //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
-                    builder.setMessage(intent.getStringExtra("body"))!!
-                        //확인 이외에 다른 선택지는 필요 없기 때문에 positiveButton만 사용함. 확인 버튼 누를 경우 다이얼로그 없어지도록 함
-                        .setPositiveButton("확인", { dialog, id -> dialog.cancel() })
-
-                    val alert = builder.create()
-                    alert.setTitle(intent.getStringExtra("title"))
-                    alert.show()
-                }
-                else -> {
-                    //다른 기능이 추가되면 필요함
-                }
-            }
-        }
-
-        //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
-        board_btn.setImageResource(R.drawable.board_click)
-        board_tv.setTextColor(Color.parseColor("#0321C6"))
-
-        //바텀 네비게이션 기능
+    fun setOnClickListener(){
+        //맵 버튼 및 알람 버튼 클릭 리스너 설정
         map_btn.setOnClickListener {
             val intent = Intent(this, ScreeningClinicMapActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
@@ -110,11 +96,45 @@ class MainActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
+    }
 
-        refresh_lottie.setOnClickListener {
-            //새로고침(로띠) 버튼 클릭 시 현황판을 업데이트 해주고 마지막 업데이트 시간으로 현재 시간을 나타내준다.
-            fetchJson()
-        }
+    fun changeIconColor(){
+        board_btn.setImageResource(R.drawable.board_click)
+        board_tv.setTextColor(Color.parseColor("#0321C6"))
+    }
+
+    fun updateUserToken(token : String?) {
+
+        val url = URL(getString(R.string.token))
+
+        //데이터(사용자 토큰)를 담아 보낼 requestBody
+        val requestBody: RequestBody = FormBody.Builder()
+            .add("token", token)
+            .add("select","token")
+            .build()
+
+        // OkHttp Request 생성
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        // 클라이언트 생성
+        val client = OkHttpClient()
+
+        // 요청 전송
+        client.newCall(request).enqueue(object : Callback {
+
+            override fun onResponse(call: Call, response: Response) {
+//                Log.d("요청", "요청 완료")
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+//                Log.d("요청", "요청 실패 ")
+            }
+
+        })
+
     }
 
     fun setLastUpdateTime() {
@@ -135,15 +155,16 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_FLEXI_UPDATE) {
             when (resultCode) {
                 Activity.RESULT_OK -> { //  handle user's approval
-
                 }
                 Activity.RESULT_CANCELED -> { //  handle user's rejection
                     Log.d(TAG, "Update flow canceled! Result code: $resultCode ")
-
+                    showToast(this@MainActivity, "업데이트를 취소하셨습니다. 앱을 종료합니다.", Toast.LENGTH_LONG)
+                    finishAffinity()
                 }
                 ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {  //  handle update failure
                     Log.d(TAG, "Update flow failed! Result code: $resultCode ")
-                    requestUpdate(appUpdateInfo = null)
+                    showToast(this@MainActivity, "업데이트에 실패하였습니다. 앱을 종료합니다.", Toast.LENGTH_LONG)
+                    finishAffinity()
                 }
 
             }
@@ -169,6 +190,7 @@ class MainActivity : AppCompatActivity() {
         //onCreate가 아닌 onResume인 이유는 1회만 실행하는 게 아닌 다른 액티비티로부터 넘어왔을때도 자동으로 새로고침을 해주기 위해서
         fetchJson()
 
+        //최신 업데이트 상황을 확인하고 최고 업데이트 버전과 다르면 인 앱 업데이트를 진행할 수 있도록 하는 코드
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 appUpdateManager.startUpdateFlowForResult(
@@ -283,7 +305,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        //toast.cancel()이 있는데도 불구하고 토스트 메세지가 바로 없어지지 않음. 수정 요망
+        //Back버튼을 누른 경우 앱이 종료된다는 경고를 토스트 메세지로 띄워준 후 2초 이내에 한번 더 누르면 앱을 종료시킨다.
         second_time = System.currentTimeMillis()
         val toast = makeText(this@MainActivity, "한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
         toast.show()
@@ -301,3 +323,32 @@ class MainActivity : AppCompatActivity() {
 //data class 생성 후 전체 json 데이터를 한번에 파싱 하려고 했으나 데이터를 가져올 때 바로 파싱하는 것으로 로직 변경
 //data class JsonObj(val result : List<StatusData>)
 //data class StatusData (val idx : String, val classification : String, val until_yesterday : Int, val today : Int)
+
+//알람을 눌러서 들어왔을 경우 해당 알람 내용을 다이얼로그로 한번 더 알려준다.
+//onCreate에 넣은 이뉴는 onResume, onStart의 경우 onDestroy 이전에 1회 이상 불러질 가능성이 있기 때문.
+//-> 1회 이상 불러지는 경우 불러질 때 마다 다이얼로그가 뜨게 된다.
+/*if (intent.hasExtra("function")) {
+    val function: String? = intent.getStringExtra("function")
+
+//            Log.d(TAG, "title : " + intent.getStringExtra("title"))
+//            Log.d(TAG, "body : " + intent.getStringExtra("body"))
+    when (function) {
+        //알람을 눌러서 들어온 경우
+        "activity_notification" -> {
+//                    Log.d(TAG, "function : " + intent.getStringExtra("function"))
+            val builder = AlertDialog.Builder(this@MainActivity)
+
+            //이미 intent에 있는 function 값으로 알람을 눌러서 들어온 것이 확인되었기 때문에 body, title은 무조건 null이 아니라고 판단. !!를 추가한다.
+            builder.setMessage(intent.getStringExtra("body"))!!
+                //확인 이외에 다른 선택지는 필요 없기 때문에 positiveButton만 사용함. 확인 버튼 누를 경우 다이얼로그 없어지도록 함
+                .setPositiveButton("확인", { dialog, id -> dialog.cancel() })
+
+            val alert = builder.create()
+            alert.setTitle(intent.getStringExtra("title"))
+            alert.show()
+        }
+        else -> {
+            //다른 기능이 추가되면 필요함
+        }
+    }
+}*/

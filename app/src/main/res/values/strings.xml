@@ -7,6 +7,9 @@
     <string name="status" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/status</string>
     <string name="url" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/url</string>
     <string name="notification" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/notification</string>
+    <string name="token" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/token</string>
     <string name="selected_hospital" translatable="false">https://www.portfoliobyteo.kro.kr/coronaStatus/selectedhospital</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

@@ -2,15 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teo.coronastatus">
 
-<!--    인터넷 연결 동의-->
-    <uses-permission android:name="android.permission.INTERNET" />
-
-<!--    인터넷 연결 상태 확인 동의-->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-<!--    내 위치 확인 동의-->
+    <!-- 인터넷 연결 동의 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 인터넷 연결 상태 확인 동의 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 내 위치 확인 동의 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
 
     <application
         android:allowBackup="true"
@@ -20,65 +15,71 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <receiver android:name=".NewAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/new_app_widget_info" />
+        </receiver>
 
         <!-- [START fcm_default_icon] -->
-        <!-- Set custom default icon. This is used when no icon is set for incoming activity_notification messages.
-             See README(https://goo.gl/l4GJaQ) for more. -->
+        <!--
+ Set custom default icon. This is used when no icon is set for incoming activity_notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/virus" />
-        <!-- Set color used with incoming activity_notification messages. This is used when no color is set for the incoming
-             activity_notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+ Set color used with incoming activity_notification messages. This is used when no color is set for the incoming
+             activity_notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-        <!-- [END fcm_default_icon] -->
-
+            android:resource="@color/colorAccent" /> <!-- [END fcm_default_icon] -->
         <!-- [START fcm_default_channel] -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/default_notification_channel_id" />
-        <!-- [END fcm_default_channel] -->
-
-        <!--        default channel Id : Notification-->
-        <!--        default channel name : CoronaChannel-->
-
+            android:value="@string/default_notification_channel_id" /> <!-- [END fcm_default_channel] -->
+        <!-- default channel Id : Notification -->
+        <!-- default channel name : CoronaChannel -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="ecc0f0fa8933a9285b69375be86272ea" />
 
         <activity
-            android:name="com.teo.coronastatus.SplashActivity"
+            android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.teo.coronastatus.MainActivity"
-            >
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
-        <activity android:name="com.teo.coronastatus.ScreeningClinicMapActivity"
-            />
-        <activity android:name="com.teo.coronastatus.CodeOfConductActivity"
-            />
-        <activity android:name="com.teo.coronastatus.NotificationActivity"
-            />
+        <activity android:name=".ScreeningClinicMapActivity" />
+        <activity android:name=".CodeOfConductActivity" />
+        <activity android:name=".NotificationActivity">
+            <intent-filter>
+                <action android:name=".NotificationActivity" />
 
-        <!--        MyFirebaseMessagingService 서비스 설정-->
-        <service android:name="com.teo.coronastatus.MyFirebaseMessagingService">
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity> <!-- MyFirebaseMessagingService 서비스 설정 -->
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
-
 
 </manifest>

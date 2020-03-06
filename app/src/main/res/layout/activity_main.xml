@@ -86,9 +86,8 @@
         android:textColor="@android:color/holo_green_light"
         android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="@+id/definite"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/definite"
+        app:layout_constraintEnd_toEndOf="@+id/textView8"
+        app:layout_constraintStart_toStartOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -97,9 +96,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         app:layout_constraintBottom_toBottomOf="@+id/loader_red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/loader_red"
+        app:layout_constraintEnd_toEndOf="@+id/textView8"
+        app:layout_constraintStart_toStartOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
         app:layout_constraintVertical_bias="1.0"
         app:lottie_fileName="loader_dna.json" />
@@ -112,9 +110,9 @@
         android:text="31"
         android:textColor="@android:color/holo_red_light"
         android:textSize="60sp"
-        app:layout_constraintEnd_toStartOf="@+id/recovery"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <com.airbnb.lottie.LottieAnimationView
@@ -122,9 +120,9 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toStartOf="@+id/loader_green"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:lottie_fileName="loader_dna.json" />
 

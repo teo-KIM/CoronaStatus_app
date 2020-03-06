@@ -18,8 +18,6 @@ class MyCustomAdapter(context: Context, dateList : MutableList<String>, contentL
     //listView에 표현 해 줄 알람 내용 리스트
     private val contents = contentList
 
-
-
     init {
         mContext = context
     }
