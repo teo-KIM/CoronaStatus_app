@@ -183,17 +183,18 @@
         app:layout_constraintVertical_bias="0.637" />
 
 
-    <com.airbnb.lottie.LottieAnimationView
+    <ImageButton
         android:id="@+id/refresh_lottie"
         android:layout_width="106dp"
         android:layout_height="104dp"
+        android:background="@android:color/white"
         android:layout_marginTop="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/isolated"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="refresh.json" />
+        app:srcCompat="@drawable/ic_refresh_black_100dp"
+        />
 
     <TextView
         android:id="@+id/textView4"
@@ -217,6 +218,7 @@
         app:layout_constraintEnd_toStartOf="@+id/refresh_lottie"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
