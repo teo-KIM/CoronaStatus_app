@@ -36,6 +36,9 @@ class NotificationActivity : AppCompatActivity() {
 
         listView = findViewById(R.id.notification_lv)
 
+        //알람 날짜와 내용을 db에서부터 가져온다.
+        getNotification()
+
 //        Log.d(TAG, "dateList : "+dateList)
 //        Log.d(TAG, "contentList : "+contentList)
 
@@ -64,6 +67,10 @@ class NotificationActivity : AppCompatActivity() {
         //현재 MainActivity에 있다는 것을 알려주기 위해 바텀 네비게이션에 현황판 이미지를 바꿔준다.
         diagnose_btn.setImageResource(R.drawable.ic_notifications_click_24dp)
         diagnose_tv.setTextColor(Color.parseColor("#0321C6"))
+    }
+
+    fun updateNotification(){
+        //TODO 알람 내용 업데이트 될 경우 onResume 에서 실행 될 수 있도록 하는 메소드
     }
 
 
@@ -122,8 +129,7 @@ class NotificationActivity : AppCompatActivity() {
         //액티비티 이동 시 넘어가는 애니메이션 삭제
         overridePendingTransition(0, 0);
 
-        //알람 날짜와 내용을 db에서부터 가져온다.
-        getNotification()
+        updateNotification()
     }
 
 
