@@ -3,11 +3,43 @@ package com.teo.coronastatus
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.RemoteViews
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AppWidgetProvider : AppWidgetProvider() {
+
+    fun updateAppWidget(
+        context: Context?,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray?
+    ) {
+
+
+        val mCalendar = Calendar.getInstance();
+        val mFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA);
+
+        /**
+         * RemoteViews를 이용해 Text설정
+         */
+        val updateViews = RemoteViews(context!!.getPackageName(), R.layout.widget_board);
+
+        updateViews.setTextViewText(R.id.now_tv, mFormat.format(mCalendar.getTime()));
+
+        val intent = Intent(context, MainActivity::class.java);
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        updateViews.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
+
+        /**
+         * 위젯 업데이트
+         */
+        appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
+
+    }
 
     /*fun updateAppWidget(
         context: Context, appWidgetManager: AppWidgetManager,
@@ -25,6 +57,7 @@ class AppWidgetProvider : AppWidgetProvider() {
         //브로드캐스트 리시버와 동일
         super.onReceive(context, intent)
     }
+
     override fun onUpdate(
         //위젯 갱신 주기에 따라 위젯 업데이트 시 사용
         //**처음 만들어질 때 사용되지 않으며 업데이트 시에만 사용된다.
@@ -32,7 +65,11 @@ class AppWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        // Perform this loop procedure for each App Widget that belongs to this provider
+
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, javaClass));
+        updateAppWidget(context, appWidgetManager, appWidgetIds);
+
+       /* // Perform this loop procedure for each App Widget that belongs to this provider
         appWidgetIds.forEach { appWidgetId ->
             // Create an Intent to launch MainActivity
             val pendingIntent: PendingIntent = Intent(context, MainActivity::class.java)
@@ -46,17 +83,18 @@ class AppWidgetProvider : AppWidgetProvider() {
                 context.packageName,
                 R.layout.widget_board
             ).apply {
-//                setOnClickPendingIntent(R.id.refresh_IB, pendingIntent)
+                //                setOnClickPendingIntent(R.id.refresh_IB, pendingIntent)
             }
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
-        }
+        }*/
     }
 
     override fun onEnabled(context: Context?) {
         //위젯이 처음 생성될 때 사용된다.
         super.onEnabled(context)
+
     }
 
     override fun onDisabled(context: Context?) {
