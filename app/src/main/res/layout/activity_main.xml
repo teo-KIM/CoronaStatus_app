@@ -10,8 +10,8 @@
         android:id="@+id/textviewBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:background="@android:color/darker_gray"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.473"
@@ -26,9 +26,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="코로나 바이러스 실시간 현황"
-        android:textStyle="bold"
         android:textColor="@android:color/black"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.473"
@@ -214,45 +214,41 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.637" />
 
-    <LinearLayout
-        android:id="@+id/bottom_text"
-        android:layout_width="match_parent"
-        android:layout_height="14dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/refresh_lottie"
+        android:layout_width="106dp"
+        android:layout_height="104dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isolated"
+        app:layout_constraintVertical_bias="1.0"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="refresh.json" />
 
-        <TextView
-            android:id="@+id/board_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:autoSizeTextType="uniform"
-            android:gravity="center"
-            android:text="현황판" />
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="마지막 업데이트"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/now_tv"
+        app:layout_constraintEnd_toEndOf="@+id/now_tv"
+        app:layout_constraintStart_toStartOf="@+id/now_tv" />
 
-        <TextView
-            android:id="@+id/map_tv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:autoSizeTextType="uniform"
-            android:gravity="center"
-            android:text="지도" />
-
-        <TextView
-            android:id="@+id/diagnose_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:autoSizeTextType="uniform"
-            android:gravity="center"
-            android:text="알람" />
-
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/now_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="2020/02/23 11:22:33"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
+        app:layout_constraintEnd_toStartOf="@+id/refresh_lottie"
+        app:layout_constraintHorizontal_bias="0.919"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/bottom_menu"
@@ -294,43 +290,47 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_notifications_black_24dp" />
 
-
     </LinearLayout>
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/refresh_lottie"
-        android:layout_width="106dp"
-        android:layout_height="104dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
+
+    <LinearLayout
+        android:id="@+id/bottom_text"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isolated"
-        app:layout_constraintVertical_bias="1.0"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="refresh.json" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="마지막 업데이트"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/now_tv"
-        app:layout_constraintEnd_toEndOf="@+id/now_tv"
-        app:layout_constraintStart_toStartOf="@+id/now_tv" />
+        <TextView
+            android:id="@+id/board_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="현황판" />
 
-    <TextView
-        android:id="@+id/now_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="2020/02/23 11:22:33"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
-        app:layout_constraintEnd_toStartOf="@+id/refresh_lottie"
-        app:layout_constraintHorizontal_bias="0.919"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/map_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="지도" />
+
+        <TextView
+            android:id="@+id/diagnose_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="알람" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
